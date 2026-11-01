@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Petal Generator - VEX 解説書 / VEX Walkthroughs</title>
+<meta name="description" content="Houdini の花びら生成ツールで使っている VEX の解説書（日本語・English）">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#fbf7f6; --card:#ffffff; --line:#efd9df; --ink:#2a1a24; --ink2:#6b4a58; --ink3:#8a7a84; --sub:#5a4a54;
+  --accent:#e0457f; --accent-ink:#c02a63; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --eb-accent:#4b45a0; --eb-ink:#33304a;
+  --wire:#d9b3c0; --node-off:#f3ebee; --node-off-ink:#8a7a84;
+  --detail:#4b45a0; --detail-bg:#e4e1f7;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+    --accent:#ff6a9e; --accent-ink:#ff8fb8;
+    --eb-accent:#8c86e6; --eb-ink:#dcd8f2;
+    --wire:#5c3d4b; --node-off:#2a2129; --node-off-ink:#a9959f;
+    --detail:#c9c5ff; --detail-bg:#35325a;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.page{max-width:1080px;margin:0 auto;padding:clamp(32px,6vw,72px) clamp(20px,5vw,56px) 80px}
+
+.tag{display:inline-block;padding:2px 14px;border-radius:999px;background:var(--tag);color:var(--tag-ink);font-weight:900;font-size:15px}
+h1{font-size:clamp(34px,6vw,60px);font-weight:900;line-height:1.15;margin:12px 0 0}
+.h1e{font-size:clamp(18px,2.6vw,26px);font-weight:700;color:var(--accent);margin-top:6px}
+.lead{font-size:clamp(16px,1.9vw,19px);font-weight:700;line-height:1.75;margin-top:22px;max-width:44em}
+.leade{font-size:clamp(14px,1.6vw,16px);font-weight:500;line-height:1.7;color:var(--sub);max-width:52em}
+
+/* network: Houdini-style top-to-bottom chain */
+.net{margin-top:48px;position:relative}
+.row{display:grid;grid-template-columns:200px minmax(0,1fr);column-gap:32px;position:relative}
+.row::before{content:"";position:absolute;left:99px;top:0;bottom:0;width:3px;background:var(--wire);border-radius:2px}
+.row:first-child::before{top:50%}
+.row:last-child::before{bottom:50%}
+.nodecol{position:relative;display:flex;align-items:center;justify-content:center;padding:14px 0}
+.node{position:relative;z-index:1;width:180px;border-radius:12px;padding:10px 12px;text-align:center;
+  font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:15px;line-height:1.3}
+.node small{display:block;font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:11.5px;margin-top:3px}
+.node.off{background:var(--node-off);color:var(--node-off-ink);border:2px dashed var(--wire)}
+.node.on{background:var(--card);color:var(--ink);border:3px solid var(--accent)}
+.node.on.detail{border-color:var(--detail)}
+.node.on small{color:var(--accent-ink)}
+.node.on.detail small{color:var(--detail)}
+
+.side{display:flex;align-items:center;padding:14px 0}
+.side.off{color:var(--ink3);font-size:14px;font-weight:500;line-height:1.6}
+.side.off span{display:block}
+
+.doc{display:block;width:100%;text-decoration:none;color:inherit;background:var(--card);border:2px solid var(--line);
+  border-radius:20px;padding:22px 26px;transition:border-color .15s, transform .15s}
+.doc:hover{border-color:var(--accent);transform:translateY(-2px)}
+.doc:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.doc .t{font-size:clamp(20px,2.4vw,26px);font-weight:900;line-height:1.25}
+.doc .te{font-size:15px;font-weight:700;color:var(--accent);margin-top:2px}
+.doc .bi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:14px}
+.doc .j{font-size:15px;font-weight:700;line-height:1.7}
+.doc .e{font-size:14px;font-weight:500;line-height:1.65;color:var(--eb-ink)}
+.doc .meta{margin-top:14px;font-size:13px;font-weight:700;color:var(--ink2)}
+.ic{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.9em}
+
+.foot{margin-top:56px;padding-top:20px;border-top:2px dashed var(--line);font-size:13px;color:var(--ink3);line-height:1.7}
+
+@media (prefers-reduced-motion: reduce){.doc{transition:none}.doc:hover{transform:none}}
+@media (max-width:760px){
+  .row{grid-template-columns:minmax(0,1fr);column-gap:0}
+  .row::before{left:22px}
+  .row:first-child::before{top:28px}
+  .nodecol{justify-content:flex-start;padding:14px 0 0}
+  .node{width:auto;min-width:0;text-align:left}
+  .side{padding:10px 0 14px 44px}
+  .doc .bi{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<div class="tag">Houdini · VEX</div>
+<h1>Petal Generator - VEX 解説書</h1>
+<div class="h1e">Petal Generator - VEX Walkthroughs</div>
+<p class="lead">桜の花びらを作る Houdini ツールの、Wrangle ノードごとの VEX 解説。ノードは上から順に流れていく。読みたいノードを選んでね。</p>
+<p class="leade">VEX walkthroughs for each Wrangle node in a Houdini tool that builds cherry blossom petals. The network flows from top to bottom; pick a node to read about.</p>
+
+<div class="net" aria-label="Node network / ノードの流れ">
+
+  <div class="row">
+    <div class="nodecol"><div class="node off">circle<small>Circle SOP</small></div></div>
+    <div class="side off"><div><span>輪郭のもとになる円。</span><span>The circle the outline starts from.</span></div></div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node on">base<small>Point Wrangle</small></div></div>
+    <div class="side">
+      <a class="doc" href="manual_base.html">
+        <div class="t">Base - 花びらの輪郭</div>
+        <div class="te">Base - the Petal Outline</div>
+        <div class="bi">
+          <div class="j">円の点を、花びらの輪郭（XZ平面）に並べ替える。幅と長さのカーブを、付け根・最大幅・先端の 3 か所で決める。</div>
+          <div class="e">Re-places the circle’s points into a flat petal outline on the XZ plane, shaped by width and length curves at the root, widest point and tip.</div>
+        </div>
+        <div class="meta">全 6 ステップ / 6 steps</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node off">resample1<small>Resample SOP</small></div></div>
+    <div class="side off"><div><span>点を均等な間隔に打ち直す。</span><span>Re-spaces the points evenly.</span></div></div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node on detail">fix_curveu<small>Detail Wrangle</small></div></div>
+    <div class="side">
+      <a class="doc" href="manual_fixCurveu.html">
+        <div class="t">Fix Curveu - curveu の振り直し</div>
+        <div class="te">Fix Curveu - Re-assigning curveu</div>
+        <div class="bi">
+          <div class="j">Resample で変わった <span class="ic">curveu</span> を、付け根 0 → 先端 0.5 → 付け根 1 にそろえ直し、先端の点を記録する。</div>
+          <div class="e">Rebuilds <span class="ic">curveu</span> as root 0 → tip 0.5 → root 1 after Resample, and saves the tip point for later nodes.</div>
+        </div>
+        <div class="meta">全 6 ステップ / 6 steps</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node on">noise<small>Point Wrangle</small></div></div>
+    <div class="side">
+      <a class="doc" href="manual_noise.html">
+        <div class="t">Noise - 輪郭のゆらぎ</div>
+        <div class="te">Noise - Wobbling the Outline</div>
+        <div class="bi">
+          <div class="j">輪郭を左右非対称にして、大小 2 つのノイズで外側・内側にゆらす。</div>
+          <div class="e">Makes the outline asymmetric, then pushes it in and out with a large and a small noise.</div>
+        </div>
+        <div class="meta">全 5 ステップ / 5 steps</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node on">notch<small>Point Wrangle</small></div></div>
+    <div class="side">
+      <a class="doc" href="manual_notch.html">
+        <div class="t">Notch - 先端の切れ込み</div>
+        <div class="te">Notch - the Tip Cleft</div>
+        <div class="bi">
+          <div class="j">先端の点を引っ込めて V 字を作り、まわりの肩を外に広げる。桜の花びららしい先端の形。</div>
+          <div class="e">Pulls the tip point in to make a V and spreads the shoulders outward: the classic cherry-petal tip.</div>
+        </div>
+        <div class="meta">全 4 ステップ / 4 steps</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="nodecol"><div class="node off">resample2<small>Resample SOP</small></div></div>
+    <div class="side off"><div><span>仕上げに点を打ち直す。</span><span>Final re-spacing of the points.</span></div></div>
+  </div>
+
+</div>
+
+<div class="foot">
+  <div>ピンクの枠は Point Wrangle、紫の枠は Detail Wrangle。点線のノードは標準の SOP（解説なし）。</div>
+  <div>Pink frames are Point Wrangles, purple is a Detail Wrangle. Dashed nodes are standard SOPs (no walkthrough).</div>
+</div>
+
+</main>
+</body>
+</html>
