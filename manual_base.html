@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VEX 解説：Base - 花びらの輪郭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --k:1;
+  --bg:#fbf7f6; --card:#ffffff; --line:#efd9df; --ink:#2a1a24; --ink2:#6b4a58; --ink3:#8a7a84; --sub:#5a4a54;
+  --accent:#e0457f; --accent-ink:#c02a63; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#fff0f4; --eb:#f1effa; --eb-ink:#33304a; --eb-accent:#4b45a0;
+  --ic-bg:#ffe3ec; --ic-ink:#c02a63; --ic2-bg:#e4e1f7; --ic2-ink:#4b45a0;
+  --dg:#fff4f7; --dg-line:#f1c7d3; --nt:#d9b3c0; --nt2:#c5c1e6;
+  --petal:#fbd0dc; --petalB:#bcdcff; --petalB-line:#2a6fb0; --guide:#b79aa6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+    --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+    --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+    --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+    --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+    --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+  --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+  --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+  --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+  --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+}
+@media (max-width:1499px){:root{--k:.8}}
+@media (max-width:999px){:root{--k:.7}}
+@media (max-width:699px){:root{--k:.56}}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif}
+.page{max-width:1920px;margin:0 auto;box-sizing:border-box;padding:calc(var(--k)*72px) calc(var(--k)*80px) calc(var(--k)*96px)}
+.tag{display:inline-block;padding:2px 16px;border-radius:999px;background:var(--tag);color:var(--tag-ink);font-weight:900;font-size:calc(var(--k)*20px)}
+.h1{font-size:calc(var(--k)*84px);font-weight:900;line-height:1.1;margin-top:12px}
+.h1e{font-size:calc(var(--k)*34px);font-weight:700;color:var(--accent);margin-top:6px}
+.lead{font-size:calc(var(--k)*26px);font-weight:700;line-height:1.6;margin-top:22px}
+.leade{font-size:calc(var(--k)*22px);font-weight:500;line-height:1.6;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.chip{display:inline-block;padding:6px 20px;border-radius:999px;background:var(--card);border:2px solid var(--line);font-size:calc(var(--k)*24px);font-weight:700;color:var(--ink);text-decoration:none}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:calc(var(--k)*28px);padding:calc(var(--k)*36px) calc(var(--k)*44px) calc(var(--k)*44px);margin-top:calc(var(--k)*36px)}
+.ch{display:flex;align-items:center;gap:calc(var(--k)*24px)}
+.cn{width:calc(var(--k)*68px);height:calc(var(--k)*68px);border-radius:50%;background:var(--accent);color:#fff;font-weight:900;font-size:calc(var(--k)*36px);display:flex;align-items:center;justify-content:center;flex:none}
+.ct{font-size:calc(var(--k)*42px);font-weight:900;line-height:1.2}
+.cs{font-size:calc(var(--k)*25px);font-weight:700;line-height:1.3;color:var(--accent)}
+.mid{display:grid;grid-template-columns:minmax(0,1fr) calc(var(--k)*660px);gap:calc(var(--k)*36px);margin-top:calc(var(--k)*28px);align-items:stretch}
+.cd{background:#17101a;border-radius:18px;padding:calc(var(--k)*28px) calc(var(--k)*32px);overflow-x:auto;border:1px solid transparent}
+:root[data-theme="dark"] .cd{border-color:#3b2a34}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cd{border-color:#3b2a34}}
+.code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-size:calc(var(--k)*22px);line-height:1.55;color:#f3eef5}
+.ln{white-space:pre}
+.ty{color:#5fe3f0}.fn{color:#c4a0ff}.at{color:#ffe45e}.st{color:#7dff7a}.kw{color:#ff8fb8}.cm{color:#8d8794}
+.dg{background:var(--dg);border:2px dashed var(--dg-line);border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center}
+.dg svg{width:100%;height:auto;max-width:100%}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(var(--k)*28px);margin-top:calc(var(--k)*28px)}
+.jb2{background:var(--jb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*27px);font-weight:700;line-height:1.7;color:var(--ink)}
+.eb2{background:var(--eb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*23px);font-weight:500;line-height:1.65;color:var(--eb-ink)}
+.lb{display:inline-block;font-size:calc(var(--k)*18px);font-weight:900;letter-spacing:.06em;padding:2px 14px;border-radius:999px;margin-bottom:12px;color:#fff}
+.lbj{background:var(--accent)}.lbe{background:var(--eb-accent)}
+.ic{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.86em;color:var(--ic-ink);background:var(--ic-bg);padding:1px 8px;border-radius:6px}
+.eb2 .ic{color:var(--ic2-ink);background:var(--ic2-bg)}
+.nt{margin-top:16px;padding-top:14px;border-top:2px dashed var(--nt)}
+.eb2 .nt{border-top-color:var(--nt2)}
+.ntj{font-weight:900;color:var(--accent-ink)}
+.nte{font-weight:900;color:var(--eb-accent)}
+
+/* SVG */
+.ax{stroke:var(--ink);stroke-width:2;fill:none}
+.ahp{fill:var(--ink)}
+.gd{stroke:var(--guide);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.gd2{stroke:var(--ink2);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.pt{fill:var(--petal);stroke:var(--accent);stroke-linejoin:round}
+.ptB{fill:var(--petalB);stroke:var(--petalB-line);stroke-linejoin:round}
+.cv{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cvg{fill:none;stroke:var(--ink3);stroke-width:3;stroke-dasharray:6 6}
+.dot{fill:var(--accent)}
+.sl{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--ink)}
+.sm{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:16px;fill:var(--ink2)}
+.sj{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--ink2)}
+
+.halo{paint-order:stroke;stroke:var(--dg);stroke-width:6px;stroke-linejoin:round}
+.sn{font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:13px;fill:var(--ink3)}
+
+@media (max-width:1299px){.mid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="tag">Point Wrangle</div>
+<div class="h1">Base - 花びらの輪郭</div>
+<div class="h1e">Base - the Petal Outline</div>
+<div class="lead">1つの円の点を、花びらの輪郭（XZ平面）に並べ替える。全 6 ステップ。</div>
+<div class="leade">Re-places the points of a circle into a flat petal outline on the XZ plane, in 6 steps.</div>
+<div class="chips">
+<a class="chip" href="#step1">1 Parameters</a>
+<a class="chip" href="#step2">2 Position</a>
+<a class="chip" href="#step3">3 Side</a>
+<a class="chip" href="#step4">4 Width</a>
+<a class="chip" href="#step5">5 Length</a>
+<a class="chip" href="#step6">6 Output</a>
+</div>
+
+<!-- STEP 1 -->
+<div class="card" id="step1">
+<div class="ch">
+<div class="cn">1</div>
+<div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="ty">float</span> length        = <span class="fn">chf</span>(<span class="st">"length"</span>);</div>
+<div class="ln"><span class="ty">float</span> max_width     = <span class="fn">chf</span>(<span class="st">"max_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> max_width_pos = <span class="fn">chf</span>(<span class="st">"max_width_pos"</span>);</div>
+<div class="ln"><span class="ty">float</span> width_curve   = <span class="fn">chf</span>(<span class="st">"width_curve"</span>);</div>
+<div class="ln"><span class="ty">float</span> root_width    = <span class="fn">chf</span>(<span class="st">"root_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> root_curve    = <span class="fn">chf</span>(<span class="st">"root_curve"</span>);</div>
+<div class="ln"><span class="ty">float</span> tip_width     = <span class="fn">chf</span>(<span class="st">"tip_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> tip_curve     = <span class="fn">chf</span>(<span class="st">"tip_curve"</span>);</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 680 466" role="img" aria-label="Petal outline with its parameters labelled: max_width, root_width and tip_width are all full widths">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker></defs>
+<line x1="366" y1="60" x2="650" y2="60" class="gd"/>
+<line x1="342" y1="410" x2="650" y2="410" class="gd"/>
+<path d="M342 410 C 342 356 450 356 450 270 C 450 180 366 130 366 60 L294 60 C 294 130 210 180 210 270 C 210 356 318 356 318 410 Z" class="pt" stroke-width="3"/>
+<line x1="330" y1="410" x2="330" y2="60" class="gd"/>
+<line x1="210" y1="270" x2="450" y2="270" class="ax" marker-start="url(#ah1)" marker-end="url(#ah1)"/>
+<text x="330" y="256" text-anchor="middle" class="sl">max_width</text>
+<line x1="170" y1="410" x2="170" y2="270" class="ax" marker-start="url(#ah1)" marker-end="url(#ah1)"/>
+<text x="158" y="346" text-anchor="end" class="sl">max_width_pos</text>
+<!-- root_width: full width (left edge to right edge) -->
+<line x1="318" y1="426" x2="342" y2="426" class="ax"/>
+<line x1="318" y1="419" x2="318" y2="433" class="ax"/>
+<line x1="342" y1="419" x2="342" y2="433" class="ax"/>
+<text x="330" y="454" text-anchor="middle" class="sl">root_width</text>
+<!-- tip_width: full width (left edge to right edge) -->
+<line x1="294" y1="44" x2="366" y2="44" class="ax"/>
+<line x1="294" y1="37" x2="294" y2="51" class="ax"/>
+<line x1="366" y1="37" x2="366" y2="51" class="ax"/>
+<text x="330" y="28" text-anchor="middle" class="sl">tip_width</text>
+<line x1="640" y1="410" x2="640" y2="60" class="ax" marker-start="url(#ah1)" marker-end="url(#ah1)"/>
+<text transform="translate(664 235) rotate(90)" text-anchor="middle" class="sl">length</text>
+<text x="382" y="52" class="sm">tip : t = 1</text>
+<text x="362" y="402" class="sm">root : t = 0</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>UI のパラメータを受け取る。右の図は、それぞれが花びらのどこを決めるかのイメージ。</div>
+<div><span class="ic">max_width</span> / <span class="ic">root_width</span> / <span class="ic">tip_width</span> は、どれも左端から右端までの全幅。左右に振り分けるため、あとの計算ではそれぞれ半分（<span class="ic">/ 2</span>）にして片側の幅として使う。</div>
+<div><span class="ic">width_curve</span> は幅の変化のカーブ。<span class="ic">root_curve</span> / <span class="ic">tip_curve</span> は長さ方向の進み方のカーブ（ステップ 5 で使う）。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Read the parameters from the UI. The figure shows which part of the petal each one controls.</div>
+<div><span class="ic">max_width</span>, <span class="ic">root_width</span> and <span class="ic">tip_width</span> are all full widths, from the left edge to the right edge. Later each one is halved (<span class="ic">/ 2</span>) so it can be used as a one-sided width and split between left and right.</div>
+<div><span class="ic">width_curve</span> eases the width change; <span class="ic">root_curve</span> / <span class="ic">tip_curve</span> ease the progress along the length (used in step 5).</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 2 -->
+<div class="card" id="step2">
+<div class="ch">
+<div class="cn">2</div>
+<div><div class="ct">輪郭上の位置を決める（u と t）</div><div class="cs">Where are we on the outline? (u and t)</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="at">f@curveu</span> = <span class="ty">float</span>(<span class="at">@ptnum</span>) / <span class="ty">float</span>(<span class="at">@numpt</span> - 1);</div>
+<div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="cm">// Root → Tip</span></div>
+<div class="ln"><span class="ty">float</span> t = 0.5 * (1.0 - <span class="fn">cos</span>(u * 2.0 * M_PI));</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 256" role="img" aria-label="Graph of t against u: rises from 0 to 1 at u = 0.5, then falls back to 0">
+<line x1="40" y1="190" x2="496" y2="190" class="ax"/>
+<line x1="40" y1="190" x2="40" y2="18" class="ax"/>
+<polyline points="40,190 62,186.1 84,174.7 106,157 128,134.7 150,110 172,85.3 194,63 216,45.3 238,33.9 260,30 282,33.9 304,45.3 326,63 348,85.3 370,110 392,134.7 414,157 436,174.7 458,186.1 480,190" class="cv"/>
+<circle cx="40" cy="190" r="6" class="dot"/>
+<circle cx="260" cy="30" r="6" class="dot"/>
+<circle cx="480" cy="190" r="6" class="dot"/>
+<text x="40" y="212" text-anchor="middle" class="sm">0</text>
+<text x="260" y="212" text-anchor="middle" class="sm">0.5</text>
+<text x="480" y="212" text-anchor="middle" class="sm">1</text>
+<text x="30" y="194" text-anchor="end" class="sm">0</text>
+<text x="30" y="36" text-anchor="end" class="sm">1</text>
+<text x="46" y="14" class="sl">t</text>
+<text x="502" y="194" class="sl">u</text>
+<text x="272" y="24" class="sj">先端 tip</text>
+<text x="40" y="232" class="sj">付け根 root</text>
+<text x="480" y="232" text-anchor="end" class="sj">付け根 root</text>
+<text x="150" y="250" text-anchor="middle" class="sj">片側の辺 one edge</text>
+<text x="370" y="250" text-anchor="middle" class="sj">もう片側 other edge</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>① 輪郭の点に、最初が 0・最後が 1 の通し番号 <span class="ic">u</span> をつける。</div>
+<div>② <span class="ic">u</span> を <span class="ic">t</span> に変換する。u が 0 → 0.5 → 1 と進むと、t は 0 → 1 → 0（付け根 → 先端 → 付け根）。</div>
+<div>左右の辺が同じ t を通るので、左右対称の形になる。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>① Give every outline point a running value <span class="ic">u</span>: 0 for the first point, 1 for the last.</div>
+<div>② Convert <span class="ic">u</span> into <span class="ic">t</span>. As u runs 0 → 0.5 → 1, t runs 0 → 1 → 0 (root → tip → root).</div>
+<div>Both edges pass through the same t values, so the shape is symmetric.</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 3 -->
+<div class="card" id="step3">
+<div class="ch">
+<div class="cn">3</div>
+<div><div class="ct">左右どちら側か</div><div class="cs">Left or right?</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Left or Right?</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x);</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Left half has side = -1, right half has side = +1">
+<defs>
+<clipPath id="clL"><rect x="0" y="0" width="330" height="470"/></clipPath>
+<clipPath id="clR"><rect x="330" y="0" width="400" height="470"/></clipPath>
+</defs>
+<g transform="translate(95 30) scale(0.5)">
+<g clip-path="url(#clL)"><path d="M342 410 C 342 356 450 356 450 270 C 450 180 366 130 366 60 L294 60 C 294 130 210 180 210 270 C 210 356 318 356 318 410 Z" class="ptB" stroke-width="5"/></g>
+<g clip-path="url(#clR)"><path d="M342 410 C 342 356 450 356 450 270 C 450 180 366 130 366 60 L294 60 C 294 130 210 180 210 270 C 210 356 318 356 318 410 Z" class="pt" stroke-width="5"/></g>
+</g>
+<line x1="260" y1="30" x2="260" y2="240" class="gd2"/>
+<text x="92" y="120" text-anchor="middle" class="sl">side = −1</text>
+<text x="92" y="146" text-anchor="middle" class="sm">(x &lt; 0)</text>
+<text x="428" y="120" text-anchor="middle" class="sl">side = +1</text>
+<text x="428" y="146" text-anchor="middle" class="sm">(x &gt; 0)</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">sign()</span> は、正なら +1、負なら −1、ちょうど 0 なら 0 を返す。</div>
+<div>元の x 座標の「向き」だけを取り出して、あとで幅を左右に振り分けるために使う。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div><span class="ic">sign()</span> returns +1 for positive, −1 for negative, 0 for exactly zero.</div>
+<div>We keep only the direction of the original x, to push the width left or right later.</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 4 -->
+<div class="card" id="step4">
+<div class="ch">
+<div class="cn">4</div>
+<div><div class="ct">幅を計算する</div><div class="cs">Compute the width</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Calculate width</span></div>
+<div class="ln"><span class="ty">float</span> width;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="kw">if</span> (t &lt;= max_width_pos)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, 0.0, max_width_pos, 0.0, 1.0);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, width_curve));</div>
+<div class="ln"> </div>
+<div class="ln">    width = <span class="fn">lerp</span>(root_width/2, max_width/2, local_t);</div>
+<div class="ln">}</div>
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, max_width_pos, 1.0, 0.0, 1.0);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, width_curve));</div>
+<div class="ln"> </div>
+<div class="ln">    width = <span class="fn">lerp</span>(max_width/2, tip_width/2, local_t);</div>
+<div class="ln">}</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 256" role="img" aria-label="Width against t: eases from root_width / 2 up to max_width / 2 at max_width_pos, then down to tip_width / 2">
+<line x1="40" y1="190" x2="496" y2="190" class="ax"/>
+<line x1="40" y1="190" x2="40" y2="18" class="ax"/>
+<line x1="216" y1="62" x2="216" y2="190" class="gd"/>
+<path d="M40 177 C 128 177 128 62 216 62 C 348 62 348 151.6 480 151.6" class="cv"/>
+<circle cx="40" cy="177" r="6" class="dot"/>
+<circle cx="216" cy="62" r="6" class="dot"/>
+<circle cx="480" cy="151.6" r="6" class="dot"/>
+<text x="50" y="156" class="sl halo">root_width / 2</text>
+<text x="226" y="52" class="sl">max_width / 2</text>
+<text x="424" y="176" text-anchor="middle" class="sl">tip_width / 2</text>
+<text x="40" y="212" text-anchor="middle" class="sm">0</text>
+<text x="216" y="212" text-anchor="middle" class="sm">max_width_pos</text>
+<text x="480" y="212" text-anchor="middle" class="sm">1</text>
+<text x="496" y="236" text-anchor="end" class="sm">t (root → tip)</text>
+<text x="48" y="14" class="sl">width</text>
+<text x="500" y="12" text-anchor="end" class="sn">イメージ図 illustrative</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">t</span> が <span class="ic">max_width_pos</span> 以下（前半）と、それより大きい（後半）で、同じ手順を 2 回行う。</div>
+<div>① <span class="ic">fit</span>：区間を 0〜1 に引き伸ばす（<span class="ic">local_t</span>）</div>
+<div>② <span class="ic">pow</span>：<span class="ic">width_curve</span> でカーブをつける</div>
+<div>③ <span class="ic">smooth</span>：なめらかな 0→1 にする</div>
+<div>④ <span class="ic">lerp</span>：前半は root_width/2 → max_width/2、後半は max_width/2 → tip_width/2（3つとも全幅の値なので、半分にして片側の幅にそろえる）</div>
+<div class="nt"><span class="ntj">メモ：</span><span class="ic">max_width_pos</span> は 0 より大きく 1 より小さい値で使う。ちょうど 0 や 1 だと、前半か後半の区間の長さが 0 になって、<span class="ic">fit</span> の範囲が潰れてしまう。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>The same steps run twice: while <span class="ic">t</span> ≤ <span class="ic">max_width_pos</span> (first half), and after it (second half).</div>
+<div>① <span class="ic">fit</span>: stretch the range to 0–1 (<span class="ic">local_t</span>)</div>
+<div>② <span class="ic">pow</span>: bend it with <span class="ic">width_curve</span></div>
+<div>③ <span class="ic">smooth</span>: turn it into an eased 0 → 1</div>
+<div>④ <span class="ic">lerp</span>: root_width/2 → max_width/2 in the first half, max_width/2 → tip_width/2 in the second (all three are full widths, so each is halved to match the one-sided width)</div>
+<div class="nt"><span class="nte">Note: </span>keep <span class="ic">max_width_pos</span> strictly between 0 and 1. At exactly 0 or 1, one of the two ranges has zero length and the <span class="ic">fit</span> range collapses.</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 5 -->
+<div class="card" id="step5">
+<div class="ch">
+<div class="cn">5</div>
+<div><div class="ct">長さ方向の位置 z を計算する</div><div class="cs">Compute the position along the length (z)</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Calculate curve</span></div>
+<div class="ln"><span class="ty">float</span> z;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="kw">if</span> (t &lt;= max_width_pos)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, 0.0, max_width_pos, 0.0, 1.0);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="ty">float</span> curve_power = <span class="fn">max</span>(0.1, 1.0 + root_curve);</div>
+<div class="ln">    local_t = <span class="fn">pow</span>(local_t, curve_power);</div>
+<div class="ln"> </div>
+<div class="ln">    z = local_t * max_width_pos * length;</div>
+<div class="ln">}</div>
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, max_width_pos, 1.0, 0.0, 1.0);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="ty">float</span> curve_power = <span class="fn">max</span>(0.1, 1.0 + tip_curve);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, curve_power));</div>
+<div class="ln"> </div>
+<div class="ln">    z = (max_width_pos + local_t * (1.0 - max_width_pos)) * length;</div>
+<div class="ln">}</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 256" role="img" aria-label="z against t: first half bends with root_curve, second half eases up to length">
+<line x1="40" y1="190" x2="496" y2="190" class="ax"/>
+<line x1="40" y1="190" x2="40" y2="18" class="ax"/>
+<line x1="40" y1="30" x2="480" y2="30" class="gd"/>
+<line x1="40" y1="126" x2="216" y2="126" class="gd"/>
+<line x1="216" y1="126" x2="216" y2="190" class="gd"/>
+<line x1="40" y1="190" x2="216" y2="126" class="cvg"/>
+<path d="M40 190 Q 150 190 216 126" class="cv"/>
+<path d="M216 126 C 348 126 348 30 480 30" class="cv"/>
+<circle cx="40" cy="190" r="6" class="dot"/>
+<circle cx="216" cy="126" r="6" class="dot"/>
+<circle cx="480" cy="30" r="6" class="dot"/>
+<text x="46" y="14" class="sl">z</text>
+<text x="480" y="22" text-anchor="end" class="sm">length</text>
+<text x="48" y="120" class="sm">pos × length</text>
+<line x1="262" y1="152" x2="296" y2="152" class="cvg"/>
+<text x="304" y="157" class="sj">curve = 0 等間隔</text>
+<line x1="262" y1="176" x2="296" y2="176" class="cv"/>
+<text x="304" y="181" class="sj">curve &gt; 0 出だしゆっくり</text>
+<text x="40" y="212" text-anchor="middle" class="sm">0</text>
+<text x="216" y="212" text-anchor="middle" class="sm">max_width_pos</text>
+<text x="480" y="212" text-anchor="middle" class="sm">1</text>
+<text x="128" y="236" text-anchor="middle" class="sj">前半 first half</text>
+<text x="348" y="236" text-anchor="middle" class="sj">後半 second half</text>
+<text x="500" y="194" class="sl">t</text>
+<text x="500" y="11" text-anchor="end" class="sn">イメージ図 illustrative</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>幅と同じ 2 区間構成。<span class="ic">curve_power</span> ＝ 1 + curve（<span class="ic">max</span> で 0.1 以上）。</div>
+<div>前半：<span class="ic">z = local_t × max_width_pos × length</span>（smooth なし）</div>
+<div>後半：<span class="ic">z = (max_width_pos + local_t × (1 − max_width_pos)) × length</span>（smooth あり）</div>
+<div>curve が 0 なら等間隔、プラスなら出だしがゆっくり、マイナスなら出だしが速い。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Two ranges again, like the width. <span class="ic">curve_power</span> = 1 + curve, floored at 0.1 with <span class="ic">max</span>.</div>
+<div>First half: <span class="ic">z = local_t × max_width_pos × length</span> (no smooth)</div>
+<div>Second half: <span class="ic">z = (max_width_pos + local_t × (1 − max_width_pos)) × length</span> (with smooth)</div>
+<div>curve = 0 gives even spacing; positive starts slowly, negative starts fast.</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 6 -->
+<div class="card" id="step6">
+<div class="ch">
+<div class="cn">6</div>
+<div><div class="ct">座標を書き込む</div><div class="cs">Write the position</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="ty">float</span> x = side * width;</div>
+<div class="ln"><span class="at">@P</span> = <span class="fn">set</span>(x, 0, z);</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 340" role="img" aria-label="The finished petal outline lying flat on the XZ plane">
+<defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker></defs>
+<g transform="translate(29 13) scale(0.7)"><path d="M342 410 C 342 356 450 356 450 270 C 450 180 366 130 366 60 L294 60 C 294 130 210 180 210 270 C 210 356 318 356 318 410 Z" class="pt" stroke-width="4"/></g>
+<line x1="60" y1="320" x2="496" y2="320" class="ax" marker-end="url(#ah6)"/>
+<line x1="60" y1="320" x2="60" y2="24" class="ax" marker-end="url(#ah6)"/>
+<text x="498" y="312" text-anchor="end" class="sl">X</text>
+<text x="72" y="30" class="sl">Z</text>
+<text x="372" y="150" class="sj">y = 0（平面 flat）</text>
+<text x="372" y="180" class="sm">@P = (x, 0, z)</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">x = side × width</span> で、幅を左右に振り分ける。</div>
+<div>y は 0 のままなので、花びらは XZ 平面にぺたんと置かれる。</div>
+<div><span class="ic">@P = (x, 0, z)</span> で、輪郭の点がすべて新しい位置に移動して完成。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div><span class="ic">x = side × width</span> pushes the width left or right.</div>
+<div>y stays 0, so the petal lies flat on the XZ plane.</div>
+<div><span class="ic">@P = (x, 0, z)</span> moves every outline point to its new place — the outline is done.</div>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

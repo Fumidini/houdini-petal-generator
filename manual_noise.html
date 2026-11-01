@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VEX 解説：Noise - 輪郭のゆらぎ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --k:1;
+  --bg:#fbf7f6; --card:#ffffff; --line:#efd9df; --ink:#2a1a24; --ink2:#6b4a58; --ink3:#8a7a84; --sub:#5a4a54;
+  --accent:#e0457f; --accent-ink:#c02a63; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#fff0f4; --eb:#f1effa; --eb-ink:#33304a; --eb-accent:#4b45a0;
+  --ic-bg:#ffe3ec; --ic-ink:#c02a63; --ic2-bg:#e4e1f7; --ic2-ink:#4b45a0;
+  --dg:#fff4f7; --dg-line:#f1c7d3; --nt:#d9b3c0; --nt2:#c5c1e6;
+  --petal:#fbd0dc; --petalB:#bcdcff; --petalB-line:#2a6fb0; --guide:#b79aa6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+    --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+    --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+    --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+    --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+    --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+  --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+  --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+  --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+  --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+}
+@media (max-width:1499px){:root{--k:.8}}
+@media (max-width:999px){:root{--k:.7}}
+@media (max-width:699px){:root{--k:.56}}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif}
+.page{max-width:1920px;margin:0 auto;box-sizing:border-box;padding:calc(var(--k)*72px) calc(var(--k)*80px) calc(var(--k)*96px)}
+.tag{display:inline-block;padding:2px 16px;border-radius:999px;background:var(--tag);color:var(--tag-ink);font-weight:900;font-size:calc(var(--k)*20px)}
+.h1{font-size:calc(var(--k)*84px);font-weight:900;line-height:1.1;margin-top:12px}
+.h1e{font-size:calc(var(--k)*34px);font-weight:700;color:var(--accent);margin-top:6px}
+.lead{font-size:calc(var(--k)*26px);font-weight:700;line-height:1.6;margin-top:22px}
+.leade{font-size:calc(var(--k)*22px);font-weight:500;line-height:1.6;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.chip{display:inline-block;padding:6px 20px;border-radius:999px;background:var(--card);border:2px solid var(--line);font-size:calc(var(--k)*24px);font-weight:700;color:var(--ink);text-decoration:none}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:calc(var(--k)*28px);padding:calc(var(--k)*36px) calc(var(--k)*44px) calc(var(--k)*44px);margin-top:calc(var(--k)*36px)}
+.ch{display:flex;align-items:center;gap:calc(var(--k)*24px)}
+.cn{width:calc(var(--k)*68px);height:calc(var(--k)*68px);border-radius:50%;background:var(--accent);color:#fff;font-weight:900;font-size:calc(var(--k)*36px);display:flex;align-items:center;justify-content:center;flex:none}
+.ct{font-size:calc(var(--k)*42px);font-weight:900;line-height:1.2}
+.cs{font-size:calc(var(--k)*25px);font-weight:700;line-height:1.3;color:var(--accent)}
+.mid{display:grid;grid-template-columns:minmax(0,1fr) calc(var(--k)*660px);gap:calc(var(--k)*36px);margin-top:calc(var(--k)*28px);align-items:stretch}
+.cd{background:#17101a;border-radius:18px;padding:calc(var(--k)*28px) calc(var(--k)*32px);overflow-x:auto;border:1px solid transparent}
+:root[data-theme="dark"] .cd{border-color:#3b2a34}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cd{border-color:#3b2a34}}
+.code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-size:calc(var(--k)*22px);line-height:1.55;color:#f3eef5}
+.ln{white-space:pre}
+.ty{color:#5fe3f0}.fn{color:#c4a0ff}.at{color:#ffe45e}.st{color:#7dff7a}.kw{color:#ff8fb8}.cm{color:#8d8794}
+.dg{background:var(--dg);border:2px dashed var(--dg-line);border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center}
+.dg svg{width:100%;height:auto;max-width:100%}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(var(--k)*28px);margin-top:calc(var(--k)*28px)}
+.jb2{background:var(--jb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*27px);font-weight:700;line-height:1.7;color:var(--ink)}
+.eb2{background:var(--eb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*23px);font-weight:500;line-height:1.65;color:var(--eb-ink)}
+.lb{display:inline-block;font-size:calc(var(--k)*18px);font-weight:900;letter-spacing:.06em;padding:2px 14px;border-radius:999px;margin-bottom:12px;color:#fff}
+.lbj{background:var(--accent)}.lbe{background:var(--eb-accent)}
+.ic{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.86em;color:var(--ic-ink);background:var(--ic-bg);padding:1px 8px;border-radius:6px}
+.eb2 .ic{color:var(--ic2-ink);background:var(--ic2-bg)}
+.nt{margin-top:16px;padding-top:14px;border-top:2px dashed var(--nt)}
+.eb2 .nt{border-top-color:var(--nt2)}
+.ntj{font-weight:900;color:var(--accent-ink)}
+.nte{font-weight:900;color:var(--eb-accent)}
+
+/* SVG */
+.ax{stroke:var(--ink);stroke-width:2;fill:none}
+.ahp{fill:var(--ink)}
+.gd{stroke:var(--guide);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.gd2{stroke:var(--ink2);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.pt{fill:var(--petal);stroke:var(--accent);stroke-linejoin:round}
+.ptB{fill:var(--petalB);stroke:var(--petalB-line);stroke-linejoin:round}
+.cv{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cvg{fill:none;stroke:var(--ink3);stroke-width:3;stroke-dasharray:6 6}
+.dot{fill:var(--accent)}
+.sl{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--ink)}
+.sm{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:16px;fill:var(--ink2)}
+.sj{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--ink2)}
+
+.halo{paint-order:stroke;stroke:var(--dg);stroke-width:6px;stroke-linejoin:round}
+.sn{font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:13px;fill:var(--ink3)}
+
+@media (max-width:1299px){.mid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}
+
+.dot2{fill:var(--card);stroke:var(--accent);stroke-width:3}
+.dotg{fill:var(--ink3)}
+.box{fill:var(--card);stroke:var(--ink2);stroke-width:2}
+.boxa{fill:var(--ic-bg);stroke:var(--accent);stroke-width:2.5}
+.arr{stroke:var(--ink);stroke-width:2.5;fill:none}
+.arra{stroke:var(--accent);stroke-width:3;fill:none}
+.arrb{stroke:var(--eb-accent);stroke-width:3;fill:none}
+.ahpa{fill:var(--accent)}
+.ahpb{fill:var(--eb-accent)}
+.sla{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--accent)}
+.slb{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--eb-accent)}
+.sja{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--accent)}
+.blob{fill:var(--accent);opacity:.10}
+.blob2{fill:var(--eb-accent);opacity:.10}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="tag">Point Wrangle</div>
+<div class="h1">Noise - 輪郭のゆらぎ</div>
+<div class="h1e">Noise - Wobbling the Outline</div>
+<div class="lead">輪郭を左右非対称にして、大小 2 つのノイズで外側・内側にゆらす。全 5 ステップ。</div>
+<div class="leade">Makes the outline asymmetric, then pushes it in and out with a large and a small noise, in 5 steps.</div>
+<div class="chips">
+<a class="chip" href="#step1">1 Parameters</a>
+<a class="chip" href="#step2">2 Asymmetry</a>
+<a class="chip" href="#step3">3 Outward</a>
+<a class="chip" href="#step4">4 Large Noise</a>
+<a class="chip" href="#step5">5 Small Noise</a>
+</div>
+
+<div class="card" id="step1">
+<div class="ch">
+<div class="cn">1</div>
+<div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="ty">float</span> asymmetry = <span class="fn">chf</span>(<span class="st">"asymmetry"</span>);</div>
+<div class="ln"><span class="ty">float</span> noise_l   = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> scale_l   = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> noise_s   = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> scale_s   = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
+<div class="ln"><span class="ty">vector</span> offset_l = <span class="fn">chv</span>(<span class="st">"offset_l"</span>);</div>
+<div class="ln"><span class="ty">vector</span> offset_s = <span class="fn">chv</span>(<span class="st">"offset_s"</span>);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Amplitude is how far the outline moves; frequency is how fine the waves are; offset slides the pattern">
+
+<defs><marker id="n1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="n1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="n1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs>
+<line x1="60.0" y1="78.0" x2="300.0" y2="78.0" class="gd"/><line x1="60.0" y1="196.0" x2="300.0" y2="196.0" class="gd"/>
+<path d="M60.0 78.0 L62.0 75.3 L64.0 72.7 L66.0 70.1 L68.0 67.5 L70.0 65.0 L72.0 62.6 L74.0 60.2 L76.0 58.0 L78.0 55.9 L80.0 54.0 L82.0 52.1 L84.0 50.5 L86.0 49.0 L88.0 47.7 L90.0 46.6 L92.0 45.7 L94.0 44.9 L96.0 44.4 L98.0 44.1 L100.0 44.0 L102.0 44.1 L104.0 44.4 L106.0 44.9 L108.0 45.7 L110.0 46.6 L112.0 47.7 L114.0 49.0 L116.0 50.5 L118.0 52.1 L120.0 54.0 L122.0 55.9 L124.0 58.0 L126.0 60.2 L128.0 62.6 L130.0 65.0 L132.0 67.5 L134.0 70.1 L136.0 72.7 L138.0 75.3 L140.0 78.0 L142.0 80.7 L144.0 83.3 L146.0 85.9 L148.0 88.5 L150.0 91.0 L152.0 93.4 L154.0 95.8 L156.0 98.0 L158.0 100.1 L160.0 102.0 L162.0 103.9 L164.0 105.5 L166.0 107.0 L168.0 108.3 L170.0 109.4 L172.0 110.3 L174.0 111.1 L176.0 111.6 L178.0 111.9 L180.0 112.0 L182.0 111.9 L184.0 111.6 L186.0 111.1 L188.0 110.3 L190.0 109.4 L192.0 108.3 L194.0 107.0 L196.0 105.5 L198.0 103.9 L200.0 102.0 L202.0 100.1 L204.0 98.0 L206.0 95.8 L208.0 93.4 L210.0 91.0 L212.0 88.5 L214.0 85.9 L216.0 83.3 L218.0 80.7 L220.0 78.0 L222.0 75.3 L224.0 72.7 L226.0 70.1 L228.0 67.5 L230.0 65.0 L232.0 62.6 L234.0 60.2 L236.0 58.0 L238.0 55.9 L240.0 54.0 L242.0 52.1 L244.0 50.5 L246.0 49.0 L248.0 47.7 L250.0 46.6 L252.0 45.7 L254.0 44.9 L256.0 44.4 L258.0 44.1 L260.0 44.0 L262.0 44.1 L264.0 44.4 L266.0 44.9 L268.0 45.7 L270.0 46.6 L272.0 47.7 L274.0 49.0 L276.0 50.5 L278.0 52.1 L280.0 54.0 L282.0 55.9 L284.0 58.0 L286.0 60.2 L288.0 62.6 L290.0 65.0 L292.0 67.5 L294.0 70.1 L296.0 72.7 L298.0 75.3 L300.0 78.0" class="cv"/>
+<path d="M60.0 196.0 L62.0 192.9 L64.0 190.0 L66.0 187.5 L68.0 185.6 L70.0 184.4 L72.0 184.0 L74.0 184.4 L76.0 185.6 L78.0 187.5 L80.0 190.0 L82.0 192.9 L84.0 196.0 L86.0 199.1 L88.0 202.0 L90.0 204.5 L92.0 206.4 L94.0 207.6 L96.0 208.0 L98.0 207.6 L100.0 206.4 L102.0 204.5 L104.0 202.0 L106.0 199.1 L108.0 196.0 L110.0 192.9 L112.0 190.0 L114.0 187.5 L116.0 185.6 L118.0 184.4 L120.0 184.0 L122.0 184.4 L124.0 185.6 L126.0 187.5 L128.0 190.0 L130.0 192.9 L132.0 196.0 L134.0 199.1 L136.0 202.0 L138.0 204.5 L140.0 206.4 L142.0 207.6 L144.0 208.0 L146.0 207.6 L148.0 206.4 L150.0 204.5 L152.0 202.0 L154.0 199.1 L156.0 196.0 L158.0 192.9 L160.0 190.0 L162.0 187.5 L164.0 185.6 L166.0 184.4 L168.0 184.0 L170.0 184.4 L172.0 185.6 L174.0 187.5 L176.0 190.0 L178.0 192.9 L180.0 196.0 L182.0 199.1 L184.0 202.0 L186.0 204.5 L188.0 206.4 L190.0 207.6 L192.0 208.0 L194.0 207.6 L196.0 206.4 L198.0 204.5 L200.0 202.0 L202.0 199.1 L204.0 196.0 L206.0 192.9 L208.0 190.0 L210.0 187.5 L212.0 185.6 L214.0 184.4 L216.0 184.0 L218.0 184.4 L220.0 185.6 L222.0 187.5 L224.0 190.0 L226.0 192.9 L228.0 196.0 L230.0 199.1 L232.0 202.0 L234.0 204.5 L236.0 206.4 L238.0 207.6 L240.0 208.0 L242.0 207.6 L244.0 206.4 L246.0 204.5 L248.0 202.0 L250.0 199.1 L252.0 196.0 L254.0 192.9 L256.0 190.0 L258.0 187.5 L260.0 185.6 L262.0 184.4 L264.0 184.0 L266.0 184.4 L268.0 185.6 L270.0 187.5 L272.0 190.0 L274.0 192.9 L276.0 196.0 L278.0 199.1 L280.0 202.0 L282.0 204.5 L284.0 206.4 L286.0 207.6 L288.0 208.0 L290.0 207.6 L292.0 206.4 L294.0 204.5 L296.0 202.0 L298.0 199.1 L300.0 196.0" class="cv"/>
+<line x1="100.0" y1="78.0" x2="100.0" y2="46.0" class="arra" marker-end="url(#n1a)"/>
+<text x="320.0" y="62.0" class="sla">amplitude</text>
+<text x="320.0" y="84.0" class="sj">動かす量 how far</text>
+<text x="320.0" y="112.0" class="sm">frequency 小 low</text>
+<text x="320.0" y="134.0" class="sj">大きくゆるい波</text>
+<text x="320.0" y="186.0" class="sm">frequency 大 high</text>
+<text x="320.0" y="208.0" class="sj">細かい波 fine waves</text>
+<line x1="60.0" y1="236.0" x2="140.0" y2="236.0" class="arrb" marker-end="url(#n1b)"/>
+<text x="150.0" y="232.0" class="slb">offset</text>
+<text x="222.0" y="232.0" class="sj">模様をずらす</text>
+<text x="150.0" y="252.0" class="sj">slide the pattern</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">asymmetry</span>：左右の幅の差の強さ（ステップ 2）。</div>
+<div><span class="ic">_l</span> は大きいノイズ（large）、<span class="ic">_s</span> は小さいノイズ（small）用。同じセットが 2 組ある。</div>
+<div><span class="ic">amplitude</span>：輪郭をどれだけ動かすか。<span class="ic">frequency</span>：ノイズの細かさ（大きいほど波が多い）。<span class="ic">offset</span>：ノイズの模様をずらす（形のバリエーション用）。</div>
+<div><span class="ic">u = @curveu</span>：fix_curveu でそろえた輪郭上の位置（付け根 0 → 先端 0.5 → 付け根 1）。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div><span class="ic">asymmetry</span>: how strongly the left and right widths differ (step 2).</div>
+<div><span class="ic">_l</span> is for the large noise and <span class="ic">_s</span> for the small noise: the same set of controls, twice.</div>
+<div><span class="ic">amplitude</span>: how far the outline moves. <span class="ic">frequency</span>: how fine the noise is (higher = more waves). <span class="ic">offset</span>: slides the noise pattern (for variations).</div>
+<div><span class="ic">u = @curveu</span>: the position along the outline set up by fix_curveu (root 0 → tip 0.5 → root 1).</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step2">
+<div class="ch">
+<div class="cn">2</div>
+<div><div class="ct">左右を非対称にする</div><div class="cs">Make it asymmetric</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Asymmetry</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sin</span>(u * 2.0 * M_PI);</div>
+<div class="ln"><span class="at">@P</span>.x *= 1.0 + side * asymmetry;</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Original outline (dashed) and the asymmetric outline: one side widens, the other narrows; root and tip stay put">
+
+<path d="M170.0 226.0 L173.3 226.0 L176.7 226.0 L177.2 223.0 L178.1 219.8 L179.5 216.8 L181.4 214.0 L183.7 211.5 L186.3 209.1 L189.2 206.9 L192.3 204.9 L195.6 203.0 L199.0 201.2 L202.4 199.4 L206.0 197.7 L209.7 195.9 L213.3 194.2 L217.0 192.4 L220.7 190.6 L224.5 188.7 L228.1 186.8 L231.7 184.7 L235.3 182.6 L238.7 180.3 L242.0 177.9 L245.1 175.4 L247.9 172.8 L250.5 170.0 L252.9 167.1 L254.9 164.1 L256.6 161.0 L257.9 157.9 L259.0 154.7 L259.7 151.4 L260.1 148.2 L260.2 144.9 L260.1 141.7 L259.9 138.5 L259.4 135.2 L258.6 132.0 L257.7 128.9 L256.6 125.7 L255.3 122.6 L253.8 119.5 L252.2 116.5 L250.4 113.5 L248.5 110.5 L246.4 107.6 L244.2 104.7 L241.9 101.8 L239.6 99.0 L237.1 96.2 L234.6 93.4 L232.1 90.6 L229.5 87.9 L226.9 85.2 L224.3 82.4 L221.7 79.7 L219.1 77.0 L216.5 74.3 L214.0 71.5 L211.5 68.7 L209.2 66.0 L206.9 63.1 L204.7 60.3 L202.6 57.4 L200.7 54.4 L198.9 51.5 L197.2 48.4 L195.8 45.3 L194.5 42.2 L193.5 39.0 L192.7 35.8 L192.1 32.6 L191.1 30.0 L187.3 30.0 L183.7 30.0 L180.1 30.0 L176.7 30.0 L173.3 30.0 L170.0 30.0 L166.8 30.0 L163.7 30.0 L160.7 30.0 L157.7 30.0 L154.9 30.0 L152.1 30.0 L151.7 32.6 L151.7 35.8 L151.6 39.0 L151.3 42.2 L150.8 45.3 L150.2 48.4 L149.6 51.5 L148.8 54.4 L148.0 57.4 L147.2 60.3 L146.3 63.1 L145.3 66.0 L144.4 68.7 L143.5 71.5 L142.5 74.3 L141.6 77.0 L140.6 79.7 L139.7 82.4 L138.8 85.2 L137.9 87.9 L137.0 90.6 L136.1 93.4 L135.3 96.2 L134.4 99.0 L133.6 101.8 L132.9 104.7 L132.1 107.6 L131.4 110.5 L130.7 113.5 L130.0 116.5 L129.4 119.5 L128.8 122.6 L128.3 125.7 L127.8 128.9 L127.3 132.0 L126.9 135.2 L126.5 138.5 L126.2 141.7 L125.9 144.9 L125.7 148.2 L125.5 151.4 L125.5 154.7 L125.5 157.9 L125.7 161.0 L126.1 164.1 L126.5 167.1 L127.1 170.0 L127.9 172.8 L128.8 175.4 L129.8 177.9 L130.9 180.3 L132.2 182.6 L133.5 184.7 L134.9 186.8 L136.5 188.7 L138.1 190.6 L139.7 192.4 L141.5 194.2 L143.3 195.9 L145.1 197.7 L147.0 199.4 L149.0 201.2 L151.0 203.0 L153.0 204.9 L154.9 206.9 L156.9 209.1 L158.7 211.5 L160.4 214.0 L161.8 216.8 L162.8 219.8 L163.4 223.0 L163.7 226.0 L166.8 226.0 Z" class="pt" stroke-width="3"/>
+<path d="M170.0 226.0 L173.2 226.0 L176.5 226.0 L176.9 223.0 L177.6 219.8 L178.9 216.8 L180.5 214.0 L182.5 211.5 L184.7 209.1 L187.1 206.9 L189.7 204.9 L192.3 203.0 L195.0 201.2 L197.7 199.4 L200.4 197.7 L203.2 195.9 L205.9 194.2 L208.7 192.4 L211.3 190.6 L214.0 188.7 L216.6 186.8 L219.1 184.7 L221.6 182.6 L223.9 180.3 L226.1 177.9 L228.1 175.4 L230.0 172.8 L231.7 170.0 L233.2 167.1 L234.4 164.1 L235.4 161.0 L236.2 157.9 L236.7 154.7 L237.1 151.4 L237.2 148.2 L237.2 144.9 L237.0 141.7 L236.7 138.5 L236.2 135.2 L235.7 132.0 L235.0 128.9 L234.2 125.7 L233.3 122.6 L232.2 119.5 L231.1 116.5 L229.9 113.5 L228.5 110.5 L227.1 107.6 L225.7 104.7 L224.1 101.8 L222.6 99.0 L220.9 96.2 L219.2 93.4 L217.5 90.6 L215.8 87.9 L214.0 85.2 L212.3 82.4 L210.5 79.7 L208.8 77.0 L207.0 74.3 L205.3 71.5 L203.6 68.7 L201.9 66.0 L200.3 63.1 L198.8 60.3 L197.3 57.4 L195.9 54.4 L194.6 51.5 L193.5 48.4 L192.5 45.3 L191.6 42.2 L191.0 39.0 L190.5 35.8 L190.2 32.6 L189.5 30.0 L186.2 30.0 L183.0 30.0 L179.7 30.0 L176.5 30.0 L173.2 30.0 L170.0 30.0 L166.8 30.0 L163.5 30.0 L160.3 30.0 L157.0 30.0 L153.8 30.0 L150.5 30.0 L149.8 32.6 L149.5 35.8 L149.0 39.0 L148.4 42.2 L147.5 45.3 L146.5 48.4 L145.4 51.5 L144.1 54.4 L142.7 57.4 L141.2 60.3 L139.7 63.1 L138.1 66.0 L136.4 68.7 L134.7 71.5 L133.0 74.3 L131.2 77.0 L129.5 79.7 L127.7 82.4 L126.0 85.2 L124.2 87.9 L122.5 90.6 L120.8 93.4 L119.1 96.2 L117.4 99.0 L115.9 101.8 L114.3 104.7 L112.9 107.6 L111.5 110.5 L110.1 113.5 L108.9 116.5 L107.8 119.5 L106.7 122.6 L105.8 125.7 L105.0 128.9 L104.3 132.0 L103.8 135.2 L103.3 138.5 L103.0 141.7 L102.8 144.9 L102.8 148.2 L102.9 151.4 L103.3 154.7 L103.8 157.9 L104.6 161.0 L105.6 164.1 L106.8 167.1 L108.3 170.0 L110.0 172.8 L111.9 175.4 L113.9 177.9 L116.1 180.3 L118.4 182.6 L120.9 184.7 L123.4 186.8 L126.0 188.7 L128.7 190.6 L131.3 192.4 L134.1 194.2 L136.8 195.9 L139.6 197.7 L142.3 199.4 L145.0 201.2 L147.7 203.0 L150.3 204.9 L152.9 206.9 L155.3 209.1 L157.5 211.5 L159.5 214.0 L161.1 216.8 L162.4 219.8 L163.1 223.0 L163.5 226.0 L166.8 226.0 Z" class="gd2"/>
+<line x1="170.0" y1="22.0" x2="170.0" y2="230.0" class="gd"/>
+<text x="272.2" y="118.0" class="sla">side &gt; 0</text>
+<text x="272.2" y="140.0" class="sj">広がる wider</text>
+<text x="90.8" y="118.0" text-anchor="end" class="sla">side &lt; 0</text>
+<text x="90.8" y="140.0" text-anchor="end" class="sj">狭まる</text>
+<text x="90.8" y="160.0" text-anchor="end" class="sj">narrower</text>
+<text x="300.0" y="196.0" class="sm">side = sin(u × 2π)</text>
+<text x="300.0" y="218.0" class="sj">付け根・先端は 0 で不動</text>
+<text x="300.0" y="238.0" class="sj">root &amp; tip: side = 0</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">sin(u × 2π)</span> は、u が 0 → 0.25 → 0.5 → 0.75 → 1 と進むと、0 → 1 → 0 → −1 → 0 になる。</div>
+<div>前半（片側の辺）はプラス、後半（もう片側の辺）はマイナス。</div>
+<div>x に <span class="ic">(1 + side × asymmetry)</span> を掛けるので、片側は広がり、もう片側は狭まる。付け根と先端は side が 0 なので動かない。</div>
+<div class="nt"><span class="ntj">メモ：</span>ここの <span class="ic">side</span> は base の <span class="ic">side</span>（±1 の向き）とは別もので、−1 〜 1 のなめらかな値。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div><span class="ic">sin(u × 2π)</span> runs 0 → 1 → 0 → −1 → 0 as u runs 0 → 0.25 → 0.5 → 0.75 → 1.</div>
+<div>It is positive on the first half (one edge) and negative on the second half (the other edge).</div>
+<div>x is multiplied by <span class="ic">(1 + side × asymmetry)</span>, so one side gets wider and the other narrower. The root and tip have side = 0, so they stay put.</div>
+<div class="nt"><span class="nte">Note: </span>This <span class="ic">side</span> is not the same as <span class="ic">side</span> in Base (the ±1 direction): here it is a smooth value from −1 to 1.</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step3">
+<div class="ch">
+<div class="cn">3</div>
+<div><div class="ct">外向きの方向を求める</div><div class="cs">Find the outward direction</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Get outward</span></div>
+<div class="ln"><span class="ty">int</span> prev = (<span class="at">@ptnum</span> - 1 + <span class="at">@numpt</span>) % <span class="at">@numpt</span>;</div>
+<div class="ln"><span class="ty">int</span> next = (<span class="at">@ptnum</span> + 1) % <span class="at">@numpt</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">vector</span> P_prev = <span class="fn">point</span>(0, <span class="st">"P"</span>, prev);</div>
+<div class="ln"><span class="ty">vector</span> P_next = <span class="fn">point</span>(0, <span class="st">"P"</span>, next);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">vector</span> tangent = <span class="fn">normalize</span>(P_next - P_prev);</div>
+<div class="ln"><span class="ty">vector</span> N_prim  = <span class="fn">prim_normal</span>(0, 0, {0.5, 0.5});</div>
+<div class="ln"><span class="ty">vector</span> outward = <span class="fn">normalize</span>(<span class="fn">cross</span>(tangent, N_prim));</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="prev and next give the tangent; the polygon normal N_prim points out of the XZ plane; their cross product is the outward direction">
+
+<defs><marker id="n3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="n3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="n3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs>
+<path d="M90 176 Q 250 52 410 176" class="cv" style="stroke-width:3"/>
+<line x1="250.0" y1="114.0" x2="360.0" y2="114.0" class="arrb" marker-end="url(#n3b)"/>
+<line x1="250.0" y1="114.0" x2="250.0" y2="40.0" class="arra" marker-end="url(#n3a)"/>
+<circle cx="170.0" cy="129.5" r="6" class="dotg"/><circle cx="330.0" cy="129.5" r="6" class="dotg"/>
+<circle cx="250" cy="114" r="15" class="ax"/><circle cx="250.0" cy="114.0" r="6" class="dot"/>
+<text x="164.0" y="155.5" text-anchor="middle" class="sm">prev</text>
+<text x="336.0" y="155.5" text-anchor="middle" class="sm">next</text>
+<text x="368.0" y="119.0" class="slb">tangent</text>
+<text x="262.0" y="50.0" class="sla">outward</text>
+<text x="262.0" y="72.0" class="sm">= cross(tangent, N_prim)</text>
+<text x="226.0" y="80.0" text-anchor="end" class="sl">N_prim</text>
+<text x="226.0" y="100.0" text-anchor="end" class="sj">(±Y 手前向き)</text>
+<text x="260.0" y="206.0" text-anchor="middle" class="sj">巻き方向は輪郭全体で同じ</text>
+<text x="260.0" y="228.0" text-anchor="middle" class="sja">→ 全部の点で同じ側を向く</text>
+<text x="260.0" y="250.0" text-anchor="middle" class="sj">same winding → same side for every point</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>① 前後の点 <span class="ic">prev</span> / <span class="ic">next</span> を求める。<span class="ic">% @numpt</span> で、最初と最後の点がつながる（閉じた輪郭）。</div>
+<div>② <span class="ic">tangent</span>：<span class="ic">next − prev</span> の向き＝輪郭に沿った向き（接線）。</div>
+<div>③ <span class="ic">N_prim</span>：輪郭ポリゴンの面の法線。花びらは XZ 平面にあるので、真上か真下（±Y）を向く。</div>
+<div>④ <span class="ic">cross(tangent, N_prim)</span>：2 つの両方に垂直な向き＝XZ 平面の中で、輪郭に垂直な向き。これが <span class="ic">outward</span>。</div>
+<div class="nt"><span class="ntj">メモ：</span>点の並び順（巻き方向）は輪郭全体で同じなので、全部の点が同じ側（外側）を向く。点ごとの反転チェックはいらない。もし全部内向きになったら、<span class="ic">cross(N_prim, tangent)</span> と順番を入れ替える。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>① Find the neighbors <span class="ic">prev</span> / <span class="ic">next</span>. <span class="ic">% @numpt</span> joins the first and last points (a closed outline).</div>
+<div>② <span class="ic">tangent</span>: the direction <span class="ic">next − prev</span>, i.e. along the outline.</div>
+<div>③ <span class="ic">N_prim</span>: the face normal of the outline polygon. The petal lies in the XZ plane, so it points straight up or down (±Y).</div>
+<div>④ <span class="ic">cross(tangent, N_prim)</span>: perpendicular to both, i.e. perpendicular to the outline inside the XZ plane. This is <span class="ic">outward</span>.</div>
+<div class="nt"><span class="nte">Note: </span>The point order (winding) is the same all around the outline, so every point faces the same side (outward). No per-point flip check is needed. If they all face inward, swap the order: <span class="ic">cross(N_prim, tangent)</span>.</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step4">
+<div class="ch">
+<div class="cn">4</div>
+<div><div class="ct">大きいノイズ</div><div class="cs">Large noise</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Large Noise</span></div>
+<div class="ln"><span class="ty">vector</span> pos_l = <span class="fn">set</span>(</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    0</div>
+<div class="ln">) + offset_l;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> n_l = <span class="fn">noise</span>(pos_l);</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * noise_l;</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="u is turned into a point on a circle inside the noise field, so u = 0 and u = 1 read the same noise value">
+
+<defs><marker id="n4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="n4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="n4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs>
+<rect x="170" y="20" width="330" height="230" rx="14" class="gd"/>
+<circle cx="250" cy="90" r="60" class="blob"/><circle cx="370" cy="170" r="70" class="blob"/><circle cx="310" cy="60" r="40" class="blob2"/><circle cx="230" cy="190" r="45" class="blob2"/><circle cx="410" cy="80" r="38" class="blob"/>
+<circle cx="330" cy="140" r="66" class="arra" fill="none"/>
+<circle cx="396.0" cy="140.0" r="6" class="dot"/><text x="408.0" y="145.0" class="sm">u = 0 / 1</text><circle cx="330.0" cy="74.0" r="6" class="dot"/><text x="330.0" y="60.0" text-anchor="middle" class="sm">u = 0.25</text><circle cx="264.0" cy="140.0" r="6" class="dot"/><text x="252.0" y="145.0" text-anchor="end" class="sm">u = 0.5</text><circle cx="330.0" cy="206.0" r="6" class="dot"/><text x="330.0" y="232.0" text-anchor="middle" class="sm">u = 0.75</text>
+<line x1="330.0" y1="140.0" x2="376.7" y2="93.3" class="ax"/>
+<text x="384.7" y="87.3" class="sm">frequency_l</text>
+<line x1="178.0" y1="246.0" x2="326.0" y2="144.0" class="arrb" marker-end="url(#n4b)"/>
+<text x="196.0" y="212.0" class="slb">offset_l</text>
+<text x="184.0" y="42.0" class="sj">noise 空間 noise space</text>
+<text x="14.0" y="110.0" class="sm">(cos, sin)</text>
+<text x="14.0" y="132.0" class="sj">円をひとまわり</text>
+<text x="14.0" y="152.0" class="sj">one lap</text>
+<text x="14.0" y="184.0" class="sja">継ぎ目なし</text>
+<text x="14.0" y="204.0" class="sja">seamless</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>u を円の上の座標 <span class="ic">(cos, sin)</span> に変えて、ノイズ空間の円をひとまわりするように <span class="ic">noise</span> を読む。</div>
+<div>u = 0 と u = 1 が同じ場所になるので、付け根の継ぎ目でノイズが途切れない。</div>
+<div><span class="ic">frequency_l</span> は円の半径。大きいほど広い範囲を読むので、波が細かくなる。<span class="ic">offset_l</span> で円の位置をずらすと模様が変わる。</div>
+<div><span class="ic">noise()</span> はだいたい 0〜1 の値なので、<span class="ic">− 0.5</span> してプラス・マイナスに振り、<span class="ic">outward</span> の向きに <span class="ic">amplitude_l</span> 倍だけ押し出す・引っ込める。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>u is turned into a point <span class="ic">(cos, sin)</span> on a circle, so <span class="ic">noise</span> is read while going once around a circle in noise space.</div>
+<div>u = 0 and u = 1 land on the same spot, so there is no break in the noise at the root seam.</div>
+<div><span class="ic">frequency_l</span> is the circle’s radius: a bigger circle covers more of the noise, so the waves get finer. <span class="ic">offset_l</span> moves the circle and changes the pattern.</div>
+<div><span class="ic">noise()</span> returns roughly 0–1, so <span class="ic">− 0.5</span> makes it plus/minus, and the point is pushed out or pulled in along <span class="ic">outward</span> by <span class="ic">amplitude_l</span>.</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step5">
+<div class="ch">
+<div class="cn">5</div>
+<div><div class="ct">小さいノイズ</div><div class="cs">Small noise</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Small Noise</span></div>
+<div class="ln"><span class="ty">vector</span> pos_s = <span class="fn">set</span>(</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    0</div>
+<div class="ln">) + offset_s;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> n_s = <span class="fn">noise</span>(pos_s);</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * noise_s;</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Original outline, after the large noise, and after adding the small noise">
+
+<path d="M100.0 222.5 L102.3 222.5 L104.6 222.5 L106.6 222.1 L106.8 219.8 L107.2 217.6 L107.9 215.3 L108.8 213.2 L110.0 211.2 L111.3 209.3 L112.8 207.6 L114.5 205.9 L116.2 204.3 L118.0 202.9 L119.8 201.4 L121.7 200.1 L123.6 198.8 L125.5 197.5 L127.5 196.2 L129.4 195.0 L131.4 193.7 L133.3 192.5 L135.3 191.2 L137.2 190.0 L139.2 188.7 L141.1 187.4 L143.0 186.1 L144.8 184.7 L146.7 183.2 L148.5 181.8 L150.2 180.2 L151.9 178.7 L153.5 177.0 L155.1 175.3 L156.6 173.5 L158.0 171.7 L159.3 169.7 L160.5 167.7 L161.5 165.7 L162.5 163.6 L163.4 161.4 L164.1 159.2 L164.7 157.0 L165.2 154.7 L165.5 152.4 L165.8 150.1 L166.0 147.8 L166.0 145.5 L166.0 143.2 L165.9 140.9 L165.7 138.5 L165.5 136.2 L165.1 133.9 L164.8 131.6 L164.3 129.4 L163.8 127.1 L163.3 124.9 L162.6 122.6 L161.9 120.4 L161.2 118.2 L160.4 116.0 L159.6 113.9 L158.7 111.7 L157.7 109.6 L156.8 107.5 L155.7 105.4 L154.7 103.4 L153.6 101.3 L152.5 99.3 L151.3 97.3 L150.2 95.3 L149.0 93.3 L147.8 91.3 L146.5 89.3 L145.3 87.4 L144.0 85.4 L142.8 83.5 L141.5 81.5 L140.3 79.6 L139.0 77.6 L137.7 75.7 L136.5 73.7 L135.3 71.8 L134.0 69.8 L132.8 67.8 L131.6 65.8 L130.5 63.8 L129.3 61.8 L128.2 59.7 L127.2 57.7 L126.2 55.6 L125.2 53.5 L124.3 51.3 L123.5 49.2 L122.7 47.0 L122.0 44.8 L121.4 42.5 L120.9 40.3 L120.5 38.0 L120.1 35.7 L119.9 33.4 L119.8 31.1 L118.6 30.0 L116.2 30.0 L113.9 30.0 L111.6 30.0 L109.3 30.0 L107.0 30.0 L104.6 30.0 L102.3 30.0 L100.0 30.0 L97.7 30.0 L95.4 30.0 L93.0 30.0 L90.7 30.0 L88.4 30.0 L86.1 30.0 L83.8 30.0 L81.4 30.0 L80.2 31.1 L80.1 33.4 L79.9 35.7 L79.5 38.0 L79.1 40.3 L78.6 42.5 L78.0 44.8 L77.3 47.0 L76.5 49.2 L75.7 51.3 L74.8 53.5 L73.8 55.6 L72.8 57.7 L71.8 59.7 L70.7 61.8 L69.5 63.8 L68.4 65.8 L67.2 67.8 L66.0 69.8 L64.7 71.8 L63.5 73.7 L62.3 75.7 L61.0 77.6 L59.7 79.6 L58.5 81.5 L57.2 83.5 L56.0 85.4 L54.7 87.4 L53.5 89.3 L52.2 91.3 L51.0 93.3 L49.8 95.3 L48.7 97.3 L47.5 99.3 L46.4 101.3 L45.3 103.4 L44.3 105.4 L43.2 107.5 L42.3 109.6 L41.3 111.7 L40.4 113.9 L39.6 116.0 L38.8 118.2 L38.1 120.4 L37.4 122.6 L36.7 124.9 L36.2 127.1 L35.7 129.4 L35.2 131.6 L34.9 133.9 L34.5 136.2 L34.3 138.5 L34.1 140.9 L34.0 143.2 L34.0 145.5 L34.0 147.8 L34.2 150.1 L34.5 152.4 L34.8 154.7 L35.3 157.0 L35.9 159.2 L36.6 161.4 L37.5 163.6 L38.5 165.7 L39.5 167.7 L40.7 169.7 L42.0 171.7 L43.4 173.5 L44.9 175.3 L46.5 177.0 L48.1 178.7 L49.8 180.2 L51.5 181.8 L53.3 183.2 L55.2 184.7 L57.0 186.1 L58.9 187.4 L60.8 188.7 L62.8 190.0 L64.7 191.2 L66.7 192.5 L68.6 193.7 L70.6 195.0 L72.5 196.2 L74.5 197.5 L76.4 198.8 L78.3 200.1 L80.2 201.4 L82.0 202.9 L83.8 204.3 L85.5 205.9 L87.2 207.6 L88.7 209.3 L90.0 211.2 L91.2 213.2 L92.1 215.3 L92.8 217.6 L93.2 219.8 L93.4 222.1 L95.4 222.5 L97.7 222.5 Z" class="gd2"/>
+<path d="M100.0 229.9 L102.3 229.9 L105.3 229.8 L112.3 226.7 L113.9 220.8 L114.1 219.3 L114.4 217.8 L114.8 216.3 L115.5 214.8 L116.3 213.2 L117.3 211.6 L118.4 210.0 L119.7 208.4 L121.1 206.8 L122.6 205.2 L124.2 203.6 L125.8 202.1 L127.5 200.5 L129.2 198.9 L130.9 197.4 L132.7 195.8 L134.5 194.3 L136.2 192.7 L138.0 191.1 L139.7 189.5 L141.5 187.9 L143.2 186.3 L144.8 184.7 L146.5 183.0 L148.1 181.3 L149.6 179.6 L151.2 177.9 L152.6 176.1 L154.0 174.3 L155.3 172.5 L156.5 170.6 L157.6 168.7 L158.7 166.7 L159.6 164.8 L160.5 162.7 L161.3 160.7 L162.0 158.6 L162.5 156.5 L163.0 154.3 L163.4 152.1 L163.7 149.9 L163.9 147.7 L164.0 145.5 L164.0 143.2 L164.0 141.0 L164.0 138.7 L163.8 136.4 L163.6 134.2 L163.3 131.9 L163.0 129.6 L162.6 127.4 L162.1 125.2 L161.6 122.9 L161.0 120.7 L160.3 118.5 L159.6 116.3 L158.8 114.2 L157.9 112.1 L157.0 109.9 L156.0 107.9 L155.0 105.8 L153.9 103.8 L152.8 101.7 L151.6 99.7 L150.4 97.8 L149.2 95.8 L147.9 93.9 L146.6 92.0 L145.3 90.1 L143.9 88.2 L142.6 86.4 L141.2 84.5 L139.8 82.6 L138.4 80.8 L137.0 78.9 L135.6 77.1 L134.2 75.2 L132.8 73.3 L131.4 71.4 L130.0 69.5 L128.7 67.6 L127.4 65.6 L126.1 63.6 L124.9 61.5 L123.7 59.4 L122.5 57.3 L121.5 55.1 L120.5 52.9 L119.6 50.6 L118.8 48.3 L118.1 45.9 L117.5 43.5 L117.0 41.1 L116.7 38.6 L116.5 36.1 L116.4 33.6 L116.7 32.3 L117.7 33.0 L116.2 32.8 L113.9 32.6 L111.6 32.2 L109.3 31.9 L107.0 31.5 L104.6 31.2 L102.3 30.8 L100.0 30.3 L97.7 29.9 L95.4 29.4 L93.0 29.0 L90.7 28.5 L88.4 28.0 L86.1 27.5 L83.8 27.1 L80.5 26.7 L76.6 29.6 L75.7 33.1 L75.1 35.1 L74.3 37.1 L73.5 39.1 L72.7 41.0 L71.7 42.9 L70.8 44.8 L69.8 46.7 L68.7 48.5 L67.7 50.3 L66.6 52.2 L65.5 54.0 L64.3 55.9 L63.2 57.7 L62.1 59.6 L61.0 61.5 L59.8 63.4 L58.7 65.3 L57.6 67.3 L56.5 69.3 L55.5 71.3 L54.4 73.4 L53.4 75.5 L52.4 77.6 L51.4 79.7 L50.5 81.9 L49.6 84.1 L48.8 86.4 L48.0 88.7 L47.2 91.0 L46.5 93.3 L45.8 95.6 L45.2 98.0 L44.6 100.3 L44.1 102.7 L43.6 105.1 L43.2 107.5 L42.8 109.9 L42.5 112.2 L42.3 114.6 L42.1 117.0 L41.9 119.3 L41.8 121.6 L41.7 123.9 L41.7 126.2 L41.8 128.4 L41.8 130.7 L42.0 132.8 L42.1 135.0 L42.3 137.1 L42.5 139.3 L42.7 141.4 L42.9 143.4 L43.2 145.5 L43.4 147.4 L43.7 149.3 L44.1 151.1 L44.5 152.9 L44.9 154.7 L45.3 156.4 L45.8 158.1 L46.4 159.8 L47.0 161.5 L47.6 163.2 L48.4 164.9 L49.1 166.6 L50.0 168.3 L51.0 170.0 L52.0 171.8 L53.1 173.6 L54.3 175.3 L55.5 177.1 L56.8 178.9 L58.2 180.7 L59.6 182.5 L61.1 184.3 L62.6 186.1 L64.2 187.8 L65.7 189.6 L67.4 191.4 L69.0 193.2 L70.6 195.0 L72.2 196.7 L73.8 198.5 L75.4 200.3 L76.9 202.0 L78.4 203.8 L79.9 205.6 L81.2 207.3 L82.4 209.1 L83.5 210.9 L84.5 212.6 L85.2 214.3 L85.8 216.0 L86.2 217.6 L86.4 219.1 L86.4 220.7 L87.9 226.5 L94.8 229.7 L97.7 229.8 Z" class="cv" style="stroke-width:2.5"/>
+<path d="M300.0 222.5 L302.3 222.5 L304.6 222.5 L306.6 222.1 L306.8 219.8 L307.2 217.6 L307.9 215.3 L308.8 213.2 L310.0 211.2 L311.3 209.3 L312.8 207.6 L314.5 205.9 L316.2 204.3 L318.0 202.9 L319.8 201.4 L321.7 200.1 L323.6 198.8 L325.5 197.5 L327.5 196.2 L329.4 195.0 L331.4 193.7 L333.3 192.5 L335.3 191.2 L337.2 190.0 L339.2 188.7 L341.1 187.4 L343.0 186.1 L344.8 184.7 L346.7 183.2 L348.5 181.8 L350.2 180.2 L351.9 178.7 L353.5 177.0 L355.1 175.3 L356.6 173.5 L358.0 171.7 L359.3 169.7 L360.5 167.7 L361.5 165.7 L362.5 163.6 L363.4 161.4 L364.1 159.2 L364.7 157.0 L365.2 154.7 L365.5 152.4 L365.8 150.1 L366.0 147.8 L366.0 145.5 L366.0 143.2 L365.9 140.9 L365.7 138.5 L365.5 136.2 L365.1 133.9 L364.8 131.6 L364.3 129.4 L363.8 127.1 L363.3 124.9 L362.6 122.6 L361.9 120.4 L361.2 118.2 L360.4 116.0 L359.6 113.9 L358.7 111.7 L357.7 109.6 L356.8 107.5 L355.7 105.4 L354.7 103.4 L353.6 101.3 L352.5 99.3 L351.3 97.3 L350.2 95.3 L349.0 93.3 L347.8 91.3 L346.5 89.3 L345.3 87.4 L344.0 85.4 L342.8 83.5 L341.5 81.5 L340.3 79.6 L339.0 77.6 L337.7 75.7 L336.5 73.7 L335.3 71.8 L334.0 69.8 L332.8 67.8 L331.6 65.8 L330.5 63.8 L329.3 61.8 L328.2 59.7 L327.2 57.7 L326.2 55.6 L325.2 53.5 L324.3 51.3 L323.5 49.2 L322.7 47.0 L322.0 44.8 L321.4 42.5 L320.9 40.3 L320.5 38.0 L320.1 35.7 L319.9 33.4 L319.8 31.1 L318.6 30.0 L316.2 30.0 L313.9 30.0 L311.6 30.0 L309.3 30.0 L307.0 30.0 L304.6 30.0 L302.3 30.0 L300.0 30.0 L297.7 30.0 L295.4 30.0 L293.0 30.0 L290.7 30.0 L288.4 30.0 L286.1 30.0 L283.8 30.0 L281.4 30.0 L280.2 31.1 L280.1 33.4 L279.9 35.7 L279.5 38.0 L279.1 40.3 L278.6 42.5 L278.0 44.8 L277.3 47.0 L276.5 49.2 L275.7 51.3 L274.8 53.5 L273.8 55.6 L272.8 57.7 L271.8 59.7 L270.7 61.8 L269.5 63.8 L268.4 65.8 L267.2 67.8 L266.0 69.8 L264.7 71.8 L263.5 73.7 L262.3 75.7 L261.0 77.6 L259.7 79.6 L258.5 81.5 L257.2 83.5 L256.0 85.4 L254.7 87.4 L253.5 89.3 L252.2 91.3 L251.0 93.3 L249.8 95.3 L248.7 97.3 L247.5 99.3 L246.4 101.3 L245.3 103.4 L244.3 105.4 L243.2 107.5 L242.3 109.6 L241.3 111.7 L240.4 113.9 L239.6 116.0 L238.8 118.2 L238.1 120.4 L237.4 122.6 L236.7 124.9 L236.2 127.1 L235.7 129.4 L235.2 131.6 L234.9 133.9 L234.5 136.2 L234.3 138.5 L234.1 140.9 L234.0 143.2 L234.0 145.5 L234.0 147.8 L234.2 150.1 L234.5 152.4 L234.8 154.7 L235.3 157.0 L235.9 159.2 L236.6 161.4 L237.5 163.6 L238.5 165.7 L239.5 167.7 L240.7 169.7 L242.0 171.7 L243.4 173.5 L244.9 175.3 L246.5 177.0 L248.1 178.7 L249.8 180.2 L251.5 181.8 L253.3 183.2 L255.2 184.7 L257.0 186.1 L258.9 187.4 L260.8 188.7 L262.8 190.0 L264.7 191.2 L266.7 192.5 L268.6 193.7 L270.6 195.0 L272.5 196.2 L274.5 197.5 L276.4 198.8 L278.3 200.1 L280.2 201.4 L282.0 202.9 L283.8 204.3 L285.5 205.9 L287.2 207.6 L288.7 209.3 L290.0 211.2 L291.2 213.2 L292.1 215.3 L292.8 217.6 L293.2 219.8 L293.4 222.1 L295.4 222.5 L297.7 222.5 Z" class="gd2"/>
+<path d="M300.0 231.6 L302.3 231.5 L305.3 231.0 L312.7 227.0 L313.9 220.7 L313.9 219.2 L314.4 217.8 L315.2 216.4 L316.0 215.1 L316.6 213.5 L317.2 211.5 L317.8 209.3 L318.6 207.1 L319.8 205.1 L321.5 203.7 L323.6 202.8 L326.0 202.4 L328.4 201.9 L330.6 201.1 L332.4 199.7 L333.8 197.6 L335.0 195.1 L336.0 192.4 L337.2 189.9 L338.7 188.0 L340.5 186.5 L342.5 185.4 L344.6 184.4 L346.6 183.1 L348.3 181.6 L349.7 179.7 L351.0 177.8 L352.3 175.8 L353.8 174.1 L355.5 172.6 L357.3 171.2 L359.1 169.6 L360.4 167.7 L361.1 165.5 L361.1 163.0 L360.7 160.5 L360.2 158.0 L360.0 155.8 L360.4 153.8 L361.5 151.9 L363.0 149.9 L364.5 147.7 L365.7 145.5 L366.1 143.2 L365.8 140.9 L365.1 138.6 L364.1 136.4 L363.3 134.2 L362.9 132.0 L362.7 129.7 L362.6 127.4 L362.4 125.1 L361.7 122.9 L360.7 120.8 L359.3 118.9 L358.0 116.9 L357.1 114.9 L356.6 112.6 L356.6 110.1 L356.8 107.5 L356.8 104.9 L356.3 102.5 L355.1 100.5 L353.1 98.9 L350.8 97.6 L348.4 96.3 L346.3 94.9 L344.7 93.2 L343.7 91.1 L343.1 88.8 L342.4 86.4 L341.6 84.2 L340.3 82.3 L338.8 80.5 L337.1 78.9 L335.4 77.1 L334.1 75.2 L333.1 73.1 L332.3 70.9 L331.3 68.7 L330.1 66.7 L328.4 65.0 L326.2 63.5 L323.9 62.0 L321.7 60.4 L320.1 58.4 L319.3 56.1 L319.2 53.4 L319.5 50.6 L320.0 47.9 L320.1 45.3 L319.7 43.0 L318.8 40.7 L317.6 38.5 L316.5 36.1 L315.8 33.7 L316.0 32.6 L317.5 33.6 L316.2 33.1 L313.9 32.5 L311.6 32.3 L309.3 32.3 L307.0 32.5 L304.6 32.6 L302.3 32.2 L300.0 31.2 L297.7 29.8 L295.4 28.1 L293.0 26.7 L290.7 25.9 L288.4 25.8 L286.1 26.4 L283.8 27.3 L280.9 28.2 L278.7 30.5 L278.1 33.3 L276.8 35.3 L275.1 37.3 L273.3 39.1 L271.8 40.8 L270.8 42.7 L270.0 44.6 L269.4 46.6 L268.7 48.5 L267.6 50.3 L266.2 52.0 L264.7 53.6 L263.2 55.3 L262.1 57.1 L261.5 59.3 L261.3 61.6 L261.1 64.1 L260.7 66.5 L259.8 68.6 L258.3 70.4 L256.2 71.8 L254.0 73.1 L251.9 74.5 L250.3 76.2 L249.4 78.4 L249.1 81.0 L249.1 83.8 L249.1 86.6 L248.9 89.2 L248.2 91.6 L247.2 93.7 L246.2 95.8 L245.2 98.0 L244.6 100.3 L244.4 102.9 L244.3 105.4 L244.2 108.0 L243.7 110.3 L242.9 112.4 L241.7 114.4 L240.5 116.4 L239.7 118.5 L239.5 120.9 L240.0 123.4 L241.2 126.0 L242.6 128.6 L243.8 131.1 L244.5 133.3 L244.5 135.4 L243.8 137.3 L242.9 139.3 L242.0 141.3 L241.6 143.4 L241.8 145.5 L242.4 147.5 L243.3 149.3 L244.0 151.1 L244.5 152.9 L244.6 154.7 L244.7 156.6 L245.0 158.4 L245.6 160.1 L246.8 161.6 L248.3 162.8 L249.8 164.0 L251.0 165.2 L251.8 166.9 L252.1 169.0 L252.2 171.6 L252.3 174.4 L252.8 177.0 L253.8 179.1 L255.4 180.7 L257.4 181.8 L259.5 182.6 L261.6 183.5 L263.4 184.8 L265.0 186.6 L266.3 188.7 L267.6 191.0 L269.0 193.2 L270.5 195.0 L272.3 196.6 L274.1 198.1 L275.8 199.6 L277.3 201.5 L278.5 203.8 L279.3 206.3 L280.1 208.7 L280.9 210.7 L282.0 212.3 L283.5 213.4 L285.2 214.3 L287.0 215.3 L288.4 216.7 L289.0 218.5 L288.7 220.4 L288.8 225.8 L294.8 229.8 L297.7 231.0 Z" class="pt" stroke-width="2.5"/>
+<text x="100.0" y="246.0" text-anchor="middle" class="sj">大きいノイズ large</text>
+<text x="300.0" y="246.0" text-anchor="middle" class="sj">＋ 小さいノイズ small</text>
+<text x="410.0" y="70.0" class="sm">うねり</text>
+<text x="410.0" y="92.0" class="sj">＋ 細かな凹凸</text>
+<text x="410.0" y="114.0" class="sj">waves +</text>
+<text x="410.0" y="134.0" class="sj">fine bumps</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>手順はステップ 4 と同じで、パラメータだけ <span class="ic">_s</span> 版を使う。</div>
+<div>大きいノイズで全体のうねり、小さいノイズで細かな凹凸、と役割を分けて足し合わせる。</div>
+<div><span class="ic">frequency_s</span> を大きく・<span class="ic">amplitude_s</span> を小さくするのが基本の組み合わせ。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Same steps as step 4, just with the <span class="ic">_s</span> parameters.</div>
+<div>The large noise makes the overall waves and the small noise adds fine bumps: two roles, added together.</div>
+<div>The usual combination is a high <span class="ic">frequency_s</span> with a small <span class="ic">amplitude_s</span>.</div>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VEX 解説：Notch - 先端の切れ込み</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --k:1;
+  --bg:#fbf7f6; --card:#ffffff; --line:#efd9df; --ink:#2a1a24; --ink2:#6b4a58; --ink3:#8a7a84; --sub:#5a4a54;
+  --accent:#e0457f; --accent-ink:#c02a63; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#fff0f4; --eb:#f1effa; --eb-ink:#33304a; --eb-accent:#4b45a0;
+  --ic-bg:#ffe3ec; --ic-ink:#c02a63; --ic2-bg:#e4e1f7; --ic2-ink:#4b45a0;
+  --dg:#fff4f7; --dg-line:#f1c7d3; --nt:#d9b3c0; --nt2:#c5c1e6;
+  --petal:#fbd0dc; --petalB:#bcdcff; --petalB-line:#2a6fb0; --guide:#b79aa6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+    --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+    --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+    --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+    --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+    --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#17121a; --card:#211a22; --line:#3b2a34; --ink:#f5eaf0; --ink2:#d3b6c3; --ink3:#a9959f; --sub:#c8b6bf;
+  --accent:#ff6a9e; --accent-ink:#ff8fb8; --tag:#f4a6bb; --tag-ink:#2a0f1d;
+  --jb:#33202b; --eb:#24223a; --eb-ink:#dcd8f2; --eb-accent:#8c86e6;
+  --ic-bg:#4a2335; --ic-ink:#ffb3cd; --ic2-bg:#35325a; --ic2-ink:#c9c5ff;
+  --dg:#2a1d25; --dg-line:#4d3340; --nt:#5c3d4b; --nt2:#46426e;
+  --petal:#6b2c45; --petalB:#24476e; --petalB-line:#7fb6ee; --guide:#7d6571;
+}
+@media (max-width:1499px){:root{--k:.8}}
+@media (max-width:999px){:root{--k:.7}}
+@media (max-width:699px){:root{--k:.56}}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif}
+.page{max-width:1920px;margin:0 auto;box-sizing:border-box;padding:calc(var(--k)*72px) calc(var(--k)*80px) calc(var(--k)*96px)}
+.tag{display:inline-block;padding:2px 16px;border-radius:999px;background:var(--tag);color:var(--tag-ink);font-weight:900;font-size:calc(var(--k)*20px)}
+.h1{font-size:calc(var(--k)*84px);font-weight:900;line-height:1.1;margin-top:12px}
+.h1e{font-size:calc(var(--k)*34px);font-weight:700;color:var(--accent);margin-top:6px}
+.lead{font-size:calc(var(--k)*26px);font-weight:700;line-height:1.6;margin-top:22px}
+.leade{font-size:calc(var(--k)*22px);font-weight:500;line-height:1.6;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.chip{display:inline-block;padding:6px 20px;border-radius:999px;background:var(--card);border:2px solid var(--line);font-size:calc(var(--k)*24px);font-weight:700;color:var(--ink);text-decoration:none}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:calc(var(--k)*28px);padding:calc(var(--k)*36px) calc(var(--k)*44px) calc(var(--k)*44px);margin-top:calc(var(--k)*36px)}
+.ch{display:flex;align-items:center;gap:calc(var(--k)*24px)}
+.cn{width:calc(var(--k)*68px);height:calc(var(--k)*68px);border-radius:50%;background:var(--accent);color:#fff;font-weight:900;font-size:calc(var(--k)*36px);display:flex;align-items:center;justify-content:center;flex:none}
+.ct{font-size:calc(var(--k)*42px);font-weight:900;line-height:1.2}
+.cs{font-size:calc(var(--k)*25px);font-weight:700;line-height:1.3;color:var(--accent)}
+.mid{display:grid;grid-template-columns:minmax(0,1fr) calc(var(--k)*660px);gap:calc(var(--k)*36px);margin-top:calc(var(--k)*28px);align-items:stretch}
+.cd{background:#17101a;border-radius:18px;padding:calc(var(--k)*28px) calc(var(--k)*32px);overflow-x:auto;border:1px solid transparent}
+:root[data-theme="dark"] .cd{border-color:#3b2a34}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cd{border-color:#3b2a34}}
+.code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:500;font-size:calc(var(--k)*22px);line-height:1.55;color:#f3eef5}
+.ln{white-space:pre}
+.ty{color:#5fe3f0}.fn{color:#c4a0ff}.at{color:#ffe45e}.st{color:#7dff7a}.kw{color:#ff8fb8}.cm{color:#8d8794}
+.dg{background:var(--dg);border:2px dashed var(--dg-line);border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:center}
+.dg svg{width:100%;height:auto;max-width:100%}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(var(--k)*28px);margin-top:calc(var(--k)*28px)}
+.jb2{background:var(--jb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*27px);font-weight:700;line-height:1.7;color:var(--ink)}
+.eb2{background:var(--eb);border-radius:18px;padding:calc(var(--k)*26px) calc(var(--k)*30px);font-size:calc(var(--k)*23px);font-weight:500;line-height:1.65;color:var(--eb-ink)}
+.lb{display:inline-block;font-size:calc(var(--k)*18px);font-weight:900;letter-spacing:.06em;padding:2px 14px;border-radius:999px;margin-bottom:12px;color:#fff}
+.lbj{background:var(--accent)}.lbe{background:var(--eb-accent)}
+.ic{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:.86em;color:var(--ic-ink);background:var(--ic-bg);padding:1px 8px;border-radius:6px}
+.eb2 .ic{color:var(--ic2-ink);background:var(--ic2-bg)}
+.nt{margin-top:16px;padding-top:14px;border-top:2px dashed var(--nt)}
+.eb2 .nt{border-top-color:var(--nt2)}
+.ntj{font-weight:900;color:var(--accent-ink)}
+.nte{font-weight:900;color:var(--eb-accent)}
+
+/* SVG */
+.ax{stroke:var(--ink);stroke-width:2;fill:none}
+.ahp{fill:var(--ink)}
+.gd{stroke:var(--guide);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.gd2{stroke:var(--ink2);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.pt{fill:var(--petal);stroke:var(--accent);stroke-linejoin:round}
+.ptB{fill:var(--petalB);stroke:var(--petalB-line);stroke-linejoin:round}
+.cv{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cvg{fill:none;stroke:var(--ink3);stroke-width:3;stroke-dasharray:6 6}
+.dot{fill:var(--accent)}
+.sl{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--ink)}
+.sm{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:16px;fill:var(--ink2)}
+.sj{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--ink2)}
+
+.halo{paint-order:stroke;stroke:var(--dg);stroke-width:6px;stroke-linejoin:round}
+.sn{font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:13px;fill:var(--ink3)}
+
+@media (max-width:1299px){.mid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}
+
+.dot2{fill:var(--card);stroke:var(--accent);stroke-width:3}
+.dotg{fill:var(--ink3)}
+.box{fill:var(--card);stroke:var(--ink2);stroke-width:2}
+.boxa{fill:var(--ic-bg);stroke:var(--accent);stroke-width:2.5}
+.arr{stroke:var(--ink);stroke-width:2.5;fill:none}
+.arra{stroke:var(--accent);stroke-width:3;fill:none}
+.arrb{stroke:var(--eb-accent);stroke-width:3;fill:none}
+.ahpa{fill:var(--accent)}
+.ahpb{fill:var(--eb-accent)}
+.sla{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--accent)}
+.slb{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:18px;fill:var(--eb-accent)}
+.sja{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--accent)}
+.blob{fill:var(--accent);opacity:.10}
+.blob2{fill:var(--eb-accent);opacity:.10}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="tag">Point Wrangle</div>
+<div class="h1">Notch - 先端の切れ込み</div>
+<div class="h1e">Notch - the Tip Cleft</div>
+<div class="lead">先端の 1 点を引っ込めて V 字を作り、まわりの肩を外に広げる。桜の花びららしい先端の形。全 4 ステップ。</div>
+<div class="leade">Pulls the tip point in to make a V, then spreads the shoulders outward: the classic cherry-petal tip, in 4 steps.</div>
+<div class="chips">
+<a class="chip" href="#step1">1 Parameters</a>
+<a class="chip" href="#step2">2 Tip & Side</a>
+<a class="chip" href="#step3">3 Cleft</a>
+<a class="chip" href="#step4">4 Shoulders</a>
+</div>
+
+<div class="card" id="step1">
+<div class="ch">
+<div class="cn">1</div>
+<div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="ty">float</span> notch_depth     = <span class="fn">chf</span>(<span class="st">"notch_depth"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_direction = <span class="fn">chf</span>(<span class="st">"notch_direction"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_width     = <span class="fn">chf</span>(<span class="st">"notch_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_range     = <span class="fn">chf</span>(<span class="st">"notch_range"</span>);</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Tip close-up: notch_depth pulls the tip down, notch_direction shifts it sideways, notch_width spreads the shoulders">
+
+<defs><marker id="k1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs>
+<path d="M60.0 240.0 L90.0 150.0 L140.0 118.0 L200.0 102.0 L260.0 98.0 L320.0 102.0 L380.0 118.0 L430.0 150.0 L460.0 240.0" class="gd2"/>
+<path d="M60.0 240.0 L90.0 150.0 L118.0 118.0 L156.0 102.0 L226.0 168.0 L364.0 102.0 L402.0 118.0 L430.0 150.0 L460.0 240.0" class="cv"/>
+<circle cx="90.0" cy="150.0" r="5" class="dotg"/><circle cx="118.0" cy="118.0" r="5" class="dot"/><circle cx="156.0" cy="102.0" r="5" class="dot"/><circle cx="226.0" cy="168.0" r="7" class="dot"/><circle cx="364.0" cy="102.0" r="5" class="dot"/><circle cx="402.0" cy="118.0" r="5" class="dot"/><circle cx="430.0" cy="150.0" r="5" class="dotg"/>
+<line x1="260.0" y1="104.0" x2="260.0" y2="164.0" class="arra" marker-end="url(#k1a)"/>
+<line x1="260.0" y1="194.0" x2="228.0" y2="194.0" class="arrb" marker-end="url(#k1b)"/>
+<circle cx="260.0" cy="98.0" r="5" class="dot2"/>
+<line x1="200.0" y1="74.0" x2="156.0" y2="74.0" class="arra" marker-end="url(#k1a)"/>
+<line x1="320.0" y1="74.0" x2="364.0" y2="74.0" class="arra" marker-end="url(#k1a)"/>
+<text x="260.0" y="40.0" text-anchor="middle" class="sla">notch_width</text>
+<text x="260.0" y="62.0" text-anchor="middle" class="sj">肩を外へ spread the shoulders</text>
+<text x="110.0" y="226.0" class="sla">↓ notch_depth 深さ</text>
+<text x="110.0" y="250.0" class="slb">← notch_direction 横ずれ</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div><span class="ic">notch_depth</span>：切れ込みの深さ。先端の点を付け根側（−Z）へ下げる量。</div>
+<div><span class="ic">notch_direction</span>：切れ込みの横ずれ。先端の点を −X 側へずらす量（マイナスなら +X 側）。</div>
+<div><span class="ic">notch_width</span>：肩の広がり。先端のまわりの点を外側へ広げる量。</div>
+<div><span class="ic">notch_range</span>：肩を広げる範囲。先端（u = 0.5）からの u の差がこの値より小さい点が動く（ステップ 4）。</div>
+<div>図は先端まわりの拡大イメージ。点線がもとの輪郭。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div><span class="ic">notch_depth</span>: how deep the cleft is, i.e. how far the tip point moves toward the root (−Z).</div>
+<div><span class="ic">notch_direction</span>: sideways shift of the cleft; the tip point moves toward −X (toward +X if negative).</div>
+<div><span class="ic">notch_width</span>: how far the shoulders spread, i.e. how far the points around the tip move outward.</div>
+<div><span class="ic">notch_range</span>: how wide the shoulder area is. Points whose u is closer to the tip (u = 0.5) than this value move (step 4).</div>
+<div>The figure is a close-up of the tip. The dashed line is the original outline.</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step2">
+<div class="ch">
+<div class="cn">2</div>
+<div><div class="ct">先端の点を読んで、左右を決める</div><div class="cs">Read the tip, decide left or right</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="cm">// Tip point (saved by fix_curveu)</span></div>
+<div class="ln"><span class="kw">if</span> (!<span class="fn">hasdetailattrib</span>(0, <span class="st">"tip_pt"</span>))</div>
+<div class="ln">    <span class="kw">return</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">int</span> tip_pt   = <span class="fn">detail</span>(0, <span class="st">"tip_pt"</span>);</div>
+<div class="ln"><span class="ty">vector</span> tip_P = <span class="fn">point</span>(0, <span class="st">"P"</span>, tip_pt);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="cm">// Left or Right? (measured from the tip, before moving)</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x - tip_P.x);</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 256" role="img" aria-label="The tip point saved by Fix Curveu is read; left and right are measured from the tip x position">
+<defs><marker id="k2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs><path d="M60.0 240.0 L90.0 150.0 L140.0 118.0 L200.0 102.0 L260.0 98.0 L320.0 102.0 L380.0 118.0 L430.0 150.0 L460.0 240.0" class="cv"/><line x1="260.0" y1="40.0" x2="260.0" y2="226.0" class="gd"/><circle cx="90.0" cy="150.0" r="5" class="dotg"/><circle cx="140.0" cy="118.0" r="5" class="dotg"/><circle cx="200.0" cy="102.0" r="5" class="dotg"/><circle cx="260.0" cy="98.0" r="7" class="dot"/><circle cx="320.0" cy="102.0" r="5" class="dotg"/><circle cx="380.0" cy="118.0" r="5" class="dotg"/><circle cx="430.0" cy="150.0" r="5" class="dotg"/><circle cx="260" cy="98" r="14" fill="none" class="arra"/><text x="278.0" y="84.0" class="sla">tip_P</text><line x1="244.0" y1="176.0" x2="140.0" y2="176.0" class="arrb" marker-end="url(#k2b)"/><line x1="276.0" y1="176.0" x2="380.0" y2="176.0" class="arrb" marker-end="url(#k2b)"/><text x="192.0" y="200.0" text-anchor="middle" class="slb">side = −1</text><text x="328.0" y="200.0" text-anchor="middle" class="slb">side = +1</text><text x="260.0" y="34.0" text-anchor="middle" class="sj">先端の x が基準 measured from the tip</text><text x="260.0" y="246.0" text-anchor="middle" class="sm">detail(0, "tip_pt") ← Fix Curveu</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>Fix Curveu が保存した Detail アトリビュート <span class="ic">tip_pt</span>（先端の点番号）を <span class="ic">detail()</span> で読む。先端を探しなおす必要はない。</div>
+<div><span class="ic">hasdetailattrib</span> は保険。<span class="ic">tip_pt</span> が保存されていないときは <span class="ic">return</span> して、何も動かさない。</div>
+<div><span class="ic">tip_P</span> は先端の位置。<span class="ic">@P.x − tip_P.x</span> の符号で、先端より右（+1）か左（−1）かを決める。先端自身は 0。</div>
+<div class="nt"><span class="ntj">メモ：</span><span class="ic">side</span> は先端を動かす前に計算しておく。先に動かすと、先端より左右がずれた位置で判定してしまう。また x = 0 ではなく先端の x を基準にしているので、noise や <span class="ic">notch_direction</span> で先端が中心からずれても左右を正しく分けられる。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Read the Detail attribute <span class="ic">tip_pt</span> (the tip’s point number) saved by Fix Curveu with <span class="ic">detail()</span>. No need to search for the tip again.</div>
+<div><span class="ic">hasdetailattrib</span> is a safety net: if <span class="ic">tip_pt</span> was never saved, <span class="ic">return</span> and move nothing.</div>
+<div><span class="ic">tip_P</span> is the tip position. The sign of <span class="ic">@P.x − tip_P.x</span> says whether the point is right (+1) or left (−1) of the tip. The tip itself gets 0.</div>
+<div class="nt"><span class="nte">Note: </span><span class="ic">side</span> is worked out before the tip moves; moving first would shift the reference. And because it is measured from the tip’s x instead of x = 0, left and right stay correct even when noise or <span class="ic">notch_direction</span> moves the tip off-center.</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step3">
+<div class="ch">
+<div class="cn">3</div>
+<div><div class="ct">先端を引っ込めて V 字にする</div><div class="cs">Pull the tip in (V cleft)</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="kw">if</span> (<span class="at">@ptnum</span> == tip_pt)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="cm">// Move only the tip point</span></div>
+<div class="ln">    <span class="at">@P</span>.z -= notch_depth;</div>
+<div class="ln">    <span class="at">@P</span>.x -= notch_direction;</div>
+<div class="ln">}</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 260" role="img" aria-label="Only the tip point moves: down by notch_depth and sideways by notch_direction, making a V-shaped cleft">
+
+<defs><marker id="k4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs>
+<path d="M60.0 240.0 L90.0 150.0 L140.0 118.0 L200.0 102.0 L260.0 98.0 L320.0 102.0 L380.0 118.0 L430.0 150.0 L460.0 240.0" class="gd2"/>
+<path d="M60.0 240.0 L90.0 150.0 L140.0 118.0 L200.0 102.0 L226.0 168.0 L320.0 102.0 L380.0 118.0 L430.0 150.0 L460.0 240.0" class="cv"/>
+<circle cx="90.0" cy="150.0" r="5" class="dotg"/><circle cx="140.0" cy="118.0" r="5" class="dotg"/><circle cx="200.0" cy="102.0" r="5" class="dotg"/><circle cx="320.0" cy="102.0" r="5" class="dotg"/><circle cx="380.0" cy="118.0" r="5" class="dotg"/><circle cx="430.0" cy="150.0" r="5" class="dotg"/>
+<circle cx="260.0" cy="98.0" r="6" class="dot2"/><circle cx="226.0" cy="168.0" r="7" class="dot"/>
+<line x1="260.0" y1="106.0" x2="260.0" y2="164.0" class="arra" marker-end="url(#k4a)"/>
+<line x1="260.0" y1="194.0" x2="228.0" y2="194.0" class="arrb" marker-end="url(#k4b)"/>
+<text x="110.0" y="226.0" class="sla">↓ @P.z −= notch_depth</text>
+<text x="110.0" y="250.0" class="slb">← @P.x −= notch_direction</text>
+<text x="260.0" y="40.0" text-anchor="middle" class="sj">tip_pt だけ動く only the tip moves</text>
+
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>自分が先端の点のとき（<span class="ic">@ptnum == tip_pt</span>）だけ動かす。</div>
+<div>z を <span class="ic">notch_depth</span> だけ下げる → 先端が付け根側へ引っ込んで、V 字の谷になる。</div>
+<div>x を <span class="ic">notch_direction</span> だけ減らす → 谷の位置が −X 側へずれる（マイナスの値なら +X 側）。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Only the tip point moves (<span class="ic">@ptnum == tip_pt</span>).</div>
+<div>z goes down by <span class="ic">notch_depth</span> → the tip sinks toward the root and becomes the bottom of a V.</div>
+<div>x goes down by <span class="ic">notch_direction</span> → the V shifts toward −X (toward +X for negative values).</div>
+</div>
+</div>
+</div>
+
+<div class="card" id="step4">
+<div class="ch">
+<div class="cn">4</div>
+<div><div class="ct">肩を左右に広げる</div><div class="cs">Spread the shoulders</div></div>
+</div>
+<div class="mid">
+<div class="cd"><div class="code">
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="cm">// Spread shoulders outward (weight by distance in u from the tip)</span></div>
+<div class="ln">    <span class="ty">float</span> d = <span class="fn">abs</span>(<span class="at">@curveu</span> - 0.5);</div>
+<div class="ln">    <span class="ty">float</span> weight = 1.0 - <span class="fn">smooth</span>(0.0, notch_range, d);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="at">@P</span>.x += side * notch_width * weight;</div>
+<div class="ln">}</div>
+</div></div>
+<div class="dg">
+<svg viewBox="0 0 520 256" role="img" aria-label="weight against u: 1 next to the tip, easing down to 0 at notch_range away from u = 0.5">
+<defs><marker id="k4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs><line x1="40.0" y1="196.0" x2="496.0" y2="196.0" class="ax"/><line x1="40.0" y1="196.0" x2="40.0" y2="30.0" class="ax"/><line x1="40.0" y1="52.0" x2="480.0" y2="52.0" class="gd"/><line x1="100.0" y1="196.0" x2="100.0" y2="52.0" class="gd"/><line x1="420.0" y1="196.0" x2="420.0" y2="52.0" class="gd"/><path d="M40.0 196.0 L42.2 196.0 L44.4 196.0 L46.6 196.0 L48.8 196.0 L51.0 196.0 L53.2 196.0 L55.4 196.0 L57.6 196.0 L59.8 196.0 L62.0 196.0 L64.2 196.0 L66.4 196.0 L68.6 196.0 L70.8 196.0 L73.0 196.0 L75.2 196.0 L77.4 196.0 L79.6 196.0 L81.8 196.0 L84.0 196.0 L86.2 196.0 L88.4 196.0 L90.6 196.0 L92.8 196.0 L95.0 196.0 L97.2 196.0 L99.4 196.0 L101.6 196.0 L103.8 195.8 L106.0 195.4 L108.2 194.9 L110.4 194.3 L112.6 193.5 L114.8 192.5 L117.0 191.5 L119.2 190.3 L121.4 189.0 L123.6 187.5 L125.8 186.0 L128.0 184.3 L130.2 182.5 L132.4 180.7 L134.6 178.7 L136.8 176.7 L139.0 174.5 L141.2 172.3 L143.4 170.0 L145.6 167.6 L147.8 165.1 L150.0 162.6 L152.2 160.0 L154.4 157.4 L156.6 154.7 L158.8 152.0 L161.0 149.2 L163.2 146.3 L165.4 143.5 L167.6 140.6 L169.8 137.7 L172.0 134.8 L174.2 131.8 L176.4 128.9 L178.6 125.9 L180.8 122.9 L183.0 120.0 L185.2 117.0 L187.4 114.0 L189.6 111.1 L191.8 108.2 L194.0 105.3 L196.2 102.4 L198.4 99.6 L200.6 96.8 L202.8 94.1 L205.0 91.3 L207.2 88.7 L209.4 86.1 L211.6 83.6 L213.8 81.1 L216.0 78.7 L218.2 76.3 L220.4 74.1 L222.6 71.9 L224.8 69.8 L227.0 67.9 L229.2 66.0 L231.4 64.2 L233.6 62.5 L235.8 60.9 L238.0 59.4 L240.2 58.1 L242.4 56.8 L244.6 55.7 L246.8 54.8 L249.0 53.9 L251.2 53.3 L253.4 52.7 L255.6 52.3 L257.8 52.1 L260.0 52.0 L262.2 52.1 L264.4 52.3 L266.6 52.7 L268.8 53.3 L271.0 53.9 L273.2 54.8 L275.4 55.7 L277.6 56.8 L279.8 58.1 L282.0 59.4 L284.2 60.9 L286.4 62.5 L288.6 64.2 L290.8 66.0 L293.0 67.9 L295.2 69.8 L297.4 71.9 L299.6 74.1 L301.8 76.3 L304.0 78.7 L306.2 81.1 L308.4 83.6 L310.6 86.1 L312.8 88.7 L315.0 91.3 L317.2 94.1 L319.4 96.8 L321.6 99.6 L323.8 102.4 L326.0 105.3 L328.2 108.2 L330.4 111.1 L332.6 114.0 L334.8 117.0 L337.0 120.0 L339.2 122.9 L341.4 125.9 L343.6 128.9 L345.8 131.8 L348.0 134.8 L350.2 137.7 L352.4 140.6 L354.6 143.5 L356.8 146.3 L359.0 149.2 L361.2 152.0 L363.4 154.7 L365.6 157.4 L367.8 160.0 L370.0 162.6 L372.2 165.1 L374.4 167.6 L376.6 170.0 L378.8 172.3 L381.0 174.5 L383.2 176.7 L385.4 178.7 L387.6 180.7 L389.8 182.5 L392.0 184.3 L394.2 186.0 L396.4 187.5 L398.6 189.0 L400.8 190.3 L403.0 191.5 L405.2 192.5 L407.4 193.5 L409.6 194.3 L411.8 194.9 L414.0 195.4 L416.2 195.8 L418.4 196.0 L420.6 196.0 L422.8 196.0 L425.0 196.0 L427.2 196.0 L429.4 196.0 L431.6 196.0 L433.8 196.0 L436.0 196.0 L438.2 196.0 L440.4 196.0 L442.6 196.0 L444.8 196.0 L447.0 196.0 L449.2 196.0 L451.4 196.0 L453.6 196.0 L455.8 196.0 L458.0 196.0 L460.2 196.0 L462.4 196.0 L464.6 196.0 L466.8 196.0 L469.0 196.0 L471.2 196.0 L473.4 196.0 L475.6 196.0 L477.8 196.0 L480.0 196.0" class="cv"/><circle cx="128.0" cy="184.3" r="5" class="dot"/><circle cx="172.0" cy="134.8" r="5" class="dot"/><circle cx="216.0" cy="78.7" r="5" class="dot"/><circle cx="304.0" cy="78.7" r="5" class="dot"/><circle cx="348.0" cy="134.8" r="5" class="dot"/><circle cx="392.0" cy="184.3" r="5" class="dot"/><circle cx="260.0" cy="52.0" r="6" class="dot2"/><text x="260.0" y="40.0" text-anchor="middle" class="sj">tip（else に入らない）</text><line x1="260.0" y1="228.0" x2="420.0" y2="228.0" class="arra" marker-end="url(#k4a)"/><text x="340.0" y="250.0" text-anchor="middle" class="sla">notch_range</text><text x="30.0" y="200.0" text-anchor="end" class="sm">0</text><text x="30.0" y="56.0" text-anchor="end" class="sm">1</text><text x="46.0" y="26.0" class="sl">weight</text><text x="500.0" y="200.0" class="sl">u</text><text x="260.0" y="216.0" text-anchor="middle" class="sm">u = 0.5</text>
+</svg>
+</div>
+</div>
+<div class="two">
+<div class="jb2">
+<div><span class="lb lbj">日本語</span></div>
+<div>先端以外の点はこちら。<span class="ic">d</span> は先端（u = 0.5）からの u の差。</div>
+<div><span class="ic">smooth(0.0, notch_range, d)</span> は、d が 0 → <span class="ic">notch_range</span> で 0 → 1 になめらかに増える。それを <span class="ic">1.0 −</span> で反転して、先端に近いほど 1、<span class="ic">notch_range</span> より遠いと 0 になる <span class="ic">weight</span> を作る。</div>
+<div>ステップ 2 の <span class="ic">side</span> の向きに、<span class="ic">notch_width × weight</span> だけ外側へ広げる。谷の両側が「肩」のように張り出して、V 字がはっきりする。</div>
+<div class="nt"><span class="ntj">メモ：</span>u の距離で決めているので、resample1 の点の間隔を変えても、切れ込みの幅は変わらない。<span class="ic">notch_range</span> は 0 より大きい値で使う（点が 100 個くらいなら、となりの点との u の差はおよそ 0.01）。</div>
+</div>
+<div class="eb2">
+<div><span class="lb lbe">English</span></div>
+<div>Every point except the tip comes here. <span class="ic">d</span> is how far its u is from the tip (u = 0.5).</div>
+<div><span class="ic">smooth(0.0, notch_range, d)</span> eases from 0 to 1 as d goes from 0 to <span class="ic">notch_range</span>. <span class="ic">1.0 −</span> flips it, so <span class="ic">weight</span> is 1 near the tip and 0 beyond <span class="ic">notch_range</span>.</div>
+<div>The point moves outward along <span class="ic">side</span> (step 2) by <span class="ic">notch_width × weight</span>. Both sides of the V bulge out as "shoulders", so the cleft reads clearly.</div>
+<div class="nt"><span class="nte">Note: </span>Because it uses distance in u, changing the point spacing in resample1 does not change the cleft’s width. Keep <span class="ic">notch_range</span> above 0 (with about 100 points, neighboring points are roughly 0.01 apart in u).</div>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
