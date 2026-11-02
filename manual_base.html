@@ -101,6 +101,26 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 
 @media (max-width:1299px){.mid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}
+
+/* ---- full code ---- */
+.cdw{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cdw > .cd{flex:1}
+.tofull{align-self:flex-start;font-size:calc(var(--k)*20px);font-weight:700;color:var(--accent-ink);text-decoration:none;padding:4px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.tofull:hover{border-color:var(--accent)}
+.tofull:focus-visible,.sb:focus-visible,.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fullhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:calc(var(--k)*28px)}
+.fullnote{font-size:calc(var(--k)*22px);font-weight:700;line-height:1.6}
+.fullnote .e{display:block;font-size:calc(var(--k)*19px);font-weight:500;color:var(--sub)}
+.copy{font-family:inherit;font-size:calc(var(--k)*21px);font-weight:900;color:#fff;background:var(--accent);border:none;border-radius:999px;padding:10px 24px;cursor:pointer}
+.copy:hover{filter:brightness(1.08)}
+.fullcd{margin-top:calc(var(--k)*20px)}
+.fullcd .code{min-width:max-content}
+.seg,.gap{position:relative;padding-left:calc(var(--k)*64px);border-left:4px solid transparent}
+.seg{border-left-color:#ff8fb8;border-radius:2px;margin:2px 0;scroll-margin-top:24px}
+.seg:hover,.seg:target{background:rgba(255,143,184,.10)}
+.sb{position:absolute;left:calc(var(--k)*12px);top:2px;min-width:calc(var(--k)*34px);height:calc(var(--k)*30px);padding:0 6px;border-radius:999px;background:#ff8fb8;color:#2a0f1d;
+  font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:calc(var(--k)*18px);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.sb:hover{background:#ffd0e0}
 </style>
 </head>
 <body>
@@ -118,6 +138,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <a class="chip" href="#step4">4 Width</a>
 <a class="chip" href="#step5">5 Length</a>
 <a class="chip" href="#step6">6 Output</a>
+<a class="chip" href="#full">全文 Full Code</a>
 </div>
 
 <!-- STEP 1 -->
@@ -127,6 +148,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="ty">float</span> length        = <span class="fn">chf</span>(<span class="st">"length"</span>);</div>
 <div class="ln"><span class="ty">float</span> max_width     = <span class="fn">chf</span>(<span class="st">"max_width"</span>);</div>
@@ -137,6 +159,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="ty">float</span> tip_width     = <span class="fn">chf</span>(<span class="st">"tip_width"</span>);</div>
 <div class="ln"><span class="ty">float</span> tip_curve     = <span class="fn">chf</span>(<span class="st">"tip_curve"</span>);</div>
 </div></div>
+<a class="tofull" href="#full-s1">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 680 466" role="img" aria-label="Petal outline with its parameters labelled: max_width, root_width and tip_width are all full widths">
 <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker></defs>
@@ -188,6 +212,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">輪郭上の位置を決める（u と t）</div><div class="cs">Where are we on the outline? (u and t)</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="at">f@curveu</span> = <span class="ty">float</span>(<span class="at">@ptnum</span>) / <span class="ty">float</span>(<span class="at">@numpt</span> - 1);</div>
 <div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
@@ -195,6 +220,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="cm">// Root → Tip</span></div>
 <div class="ln"><span class="ty">float</span> t = 0.5 * (1.0 - <span class="fn">cos</span>(u * 2.0 * M_PI));</div>
 </div></div>
+<a class="tofull" href="#full-s2">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 256" role="img" aria-label="Graph of t against u: rises from 0 to 1 at u = 0.5, then falls back to 0">
 <line x1="40" y1="190" x2="496" y2="190" class="ax"/>
@@ -241,10 +268,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">左右どちら側か</div><div class="cs">Left or right?</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Left or Right?</span></div>
 <div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x);</div>
 </div></div>
+<a class="tofull" href="#full-s3">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Left half has side = -1, right half has side = +1">
 <defs>
@@ -284,6 +314,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">幅を計算する</div><div class="cs">Compute the width</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Calculate width</span></div>
 <div class="ln"><span class="ty">float</span> width;</div>
@@ -303,6 +334,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln">    width = <span class="fn">lerp</span>(max_width/2, tip_width/2, local_t);</div>
 <div class="ln">}</div>
 </div></div>
+<a class="tofull" href="#full-s4">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 256" role="img" aria-label="Width against t: eases from root_width / 2 up to max_width / 2 at max_width_pos, then down to tip_width / 2">
 <line x1="40" y1="190" x2="496" y2="190" class="ax"/>
@@ -353,6 +386,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">長さ方向の位置 z を計算する</div><div class="cs">Compute the position along the length (z)</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Calculate curve</span></div>
 <div class="ln"><span class="ty">float</span> z;</div>
@@ -376,6 +410,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln">    z = (max_width_pos + local_t * (1.0 - max_width_pos)) * length;</div>
 <div class="ln">}</div>
 </div></div>
+<a class="tofull" href="#full-s5">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 256" role="img" aria-label="z against t: first half bends with root_curve, second half eases up to length">
 <line x1="40" y1="190" x2="496" y2="190" class="ax"/>
@@ -431,10 +467,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">座標を書き込む</div><div class="cs">Write the position</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="ty">float</span> x = side * width;</div>
 <div class="ln"><span class="at">@P</span> = <span class="fn">set</span>(x, 0, z);</div>
 </div></div>
+<a class="tofull" href="#full-s6">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 340" role="img" aria-label="The finished petal outline lying flat on the XZ plane">
 <defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker></defs>
@@ -464,6 +503,121 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 </div>
 </div>
 
+
+<div class="card" id="full">
+<div class="ch">
+<div class="cn">{ }</div>
+<div><div class="ct">全文</div><div class="cs">Full code</div></div>
 </div>
+<div class="fullhead">
+<div class="fullnote">左の番号を押すと、そのステップの解説に飛ぶ。<span class="e">Tap a number on the left to jump to that step’s explanation.</span></div>
+<button type="button" class="copy" id="copyFull">コピー / Copy</button>
+</div>
+<div class="cd fullcd"><div class="code">
+<div class="seg" id="full-s1"><a class="sb" href="#step1" aria-label="Step 1 の解説へ / go to step 1">1</a>
+<div class="ln"><span class="ty">float</span> length        = <span class="fn">chf</span>(<span class="st">"length"</span>);</div>
+<div class="ln"><span class="ty">float</span> max_width     = <span class="fn">chf</span>(<span class="st">"max_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> max_width_pos = <span class="fn">chf</span>(<span class="st">"max_width_pos"</span>);</div>
+<div class="ln"><span class="ty">float</span> width_curve   = <span class="fn">chf</span>(<span class="st">"width_curve"</span>);</div>
+<div class="ln"><span class="ty">float</span> root_width    = <span class="fn">chf</span>(<span class="st">"root_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> root_curve    = <span class="fn">chf</span>(<span class="st">"root_curve"</span>);</div>
+<div class="ln"><span class="ty">float</span> tip_width     = <span class="fn">chf</span>(<span class="st">"tip_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> tip_curve     = <span class="fn">chf</span>(<span class="st">"tip_curve"</span>);</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s2"><a class="sb" href="#step2" aria-label="Step 2 の解説へ / go to step 2">2</a>
+<div class="ln"><span class="at">f@curveu</span> = <span class="ty">float</span>(<span class="at">@ptnum</span>) / <span class="ty">float</span>(<span class="at">@numpt</span> - 1);</div>
+<div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="cm">// Root → Tip</span></div>
+<div class="ln"><span class="ty">float</span> t = 0.5 * (1.0 - <span class="fn">cos</span>(u * 2.0 * M_PI));</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s3"><a class="sb" href="#step3" aria-label="Step 3 の解説へ / go to step 3">3</a>
+<div class="ln"><span class="cm">// Left or Right?</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x);</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s4"><a class="sb" href="#step4" aria-label="Step 4 の解説へ / go to step 4">4</a>
+<div class="ln"><span class="cm">// Calculate width</span></div>
+<div class="ln"><span class="ty">float</span> width;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="kw">if</span> (t &lt;= max_width_pos)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, 0.0, max_width_pos, 0.0, 1.0);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, width_curve));</div>
+<div class="ln"> </div>
+<div class="ln">    width = <span class="fn">lerp</span>(root_width/2, max_width/2, local_t);</div>
+<div class="ln">}</div>
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, max_width_pos, 1.0, 0.0, 1.0);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, width_curve));</div>
+<div class="ln"> </div>
+<div class="ln">    width = <span class="fn">lerp</span>(max_width/2, tip_width/2, local_t);</div>
+<div class="ln">}</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s5"><a class="sb" href="#step5" aria-label="Step 5 の解説へ / go to step 5">5</a>
+<div class="ln"><span class="cm">// Calculate curve</span></div>
+<div class="ln"><span class="ty">float</span> z;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="kw">if</span> (t &lt;= max_width_pos)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, 0.0, max_width_pos, 0.0, 1.0);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="ty">float</span> curve_power = <span class="fn">max</span>(0.1, 1.0 + root_curve);</div>
+<div class="ln">    local_t = <span class="fn">pow</span>(local_t, curve_power);</div>
+<div class="ln"> </div>
+<div class="ln">    z = local_t * max_width_pos * length;</div>
+<div class="ln">}</div>
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="ty">float</span> local_t = <span class="fn">fit</span>(t, max_width_pos, 1.0, 0.0, 1.0);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="ty">float</span> curve_power = <span class="fn">max</span>(0.1, 1.0 + tip_curve);</div>
+<div class="ln">    local_t = <span class="fn">smooth</span>(0.0, 1.0, <span class="fn">pow</span>(local_t, curve_power));</div>
+<div class="ln"> </div>
+<div class="ln">    z = (max_width_pos + local_t * (1.0 - max_width_pos)) * length;</div>
+<div class="ln">}</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s6"><a class="sb" href="#step6" aria-label="Step 6 の解説へ / go to step 6">6</a>
+<div class="ln"><span class="ty">float</span> x = side * width;</div>
+<div class="ln"><span class="at">@P</span> = <span class="fn">set</span>(x, 0, z);</div>
+</div>
+</div></div>
+<script type="application/json" id="fullSrc">"float length        = chf(\"length\");\nfloat max_width     = chf(\"max_width\");\nfloat max_width_pos = chf(\"max_width_pos\");\nfloat width_curve   = chf(\"width_curve\");\nfloat root_width    = chf(\"root_width\");\nfloat root_curve    = chf(\"root_curve\");\nfloat tip_width     = chf(\"tip_width\");\nfloat tip_curve     = chf(\"tip_curve\");\n\nf@curveu = float(@ptnum) / float(@numpt - 1);\nfloat u = @curveu;\n\n// Root → Tip\nfloat t = 0.5 * (1.0 - cos(u * 2.0 * M_PI));\n\n// Left or Right?\nfloat side = sign(@P.x);\n\n// Calculate width\nfloat width;\n\nif (t <= max_width_pos)\n{\n    float local_t = fit(t, 0.0, max_width_pos, 0.0, 1.0);\n    local_t = smooth(0.0, 1.0, pow(local_t, width_curve));\n\n    width = lerp(root_width/2, max_width/2, local_t);\n}\nelse\n{\n    float local_t = fit(t, max_width_pos, 1.0, 0.0, 1.0);\n    local_t = smooth(0.0, 1.0, pow(local_t, width_curve));\n\n    width = lerp(max_width/2, tip_width/2, local_t);\n}\n\n// Calculate curve\nfloat z;\n\nif (t <= max_width_pos)\n{\n    float local_t = fit(t, 0.0, max_width_pos, 0.0, 1.0);\n\n    float curve_power = max(0.1, 1.0 + root_curve);\n    local_t = pow(local_t, curve_power);\n\n    z = local_t * max_width_pos * length;\n}\nelse\n{\n    float local_t = fit(t, max_width_pos, 1.0, 0.0, 1.0);\n\n    float curve_power = max(0.1, 1.0 + tip_curve);\n    local_t = smooth(0.0, 1.0, pow(local_t, curve_power));\n\n    z = (max_width_pos + local_t * (1.0 - max_width_pos)) * length;\n}\n\nfloat x = side * width;\n@P = set(x, 0, z);\n"</script>
+</div>
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyFull');
+  var src = document.getElementById('fullSrc');
+  if (!btn || !src) return;
+  var label = btn.textContent;
+  function done(ok){
+    btn.textContent = ok ? 'コピーしました / Copied' : 'コピーできませんでした / Copy failed';
+    setTimeout(function(){ btn.textContent = label; }, 2000);
+  }
+  function fallback(text){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta); done(ok);
+    }catch(e){ done(false); }
+  }
+  btn.addEventListener('click', function(){
+    var text = JSON.parse(src.textContent);
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(text); });
+    } else { fallback(text); }
+  });
+})();
+</script>
 </body>
 </html>

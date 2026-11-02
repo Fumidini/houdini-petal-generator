@@ -116,6 +116,26 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 .sja{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--accent)}
 .blob{fill:var(--accent);opacity:.10}
 .blob2{fill:var(--eb-accent);opacity:.10}
+
+/* ---- full code ---- */
+.cdw{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cdw > .cd{flex:1}
+.tofull{align-self:flex-start;font-size:calc(var(--k)*20px);font-weight:700;color:var(--accent-ink);text-decoration:none;padding:4px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.tofull:hover{border-color:var(--accent)}
+.tofull:focus-visible,.sb:focus-visible,.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fullhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:calc(var(--k)*28px)}
+.fullnote{font-size:calc(var(--k)*22px);font-weight:700;line-height:1.6}
+.fullnote .e{display:block;font-size:calc(var(--k)*19px);font-weight:500;color:var(--sub)}
+.copy{font-family:inherit;font-size:calc(var(--k)*21px);font-weight:900;color:#fff;background:var(--accent);border:none;border-radius:999px;padding:10px 24px;cursor:pointer}
+.copy:hover{filter:brightness(1.08)}
+.fullcd{margin-top:calc(var(--k)*20px)}
+.fullcd .code{min-width:max-content}
+.seg,.gap{position:relative;padding-left:calc(var(--k)*64px);border-left:4px solid transparent}
+.seg{border-left-color:#ff8fb8;border-radius:2px;margin:2px 0;scroll-margin-top:24px}
+.seg:hover,.seg:target{background:rgba(255,143,184,.10)}
+.sb{position:absolute;left:calc(var(--k)*12px);top:2px;min-width:calc(var(--k)*34px);height:calc(var(--k)*30px);padding:0 6px;border-radius:999px;background:#ff8fb8;color:#2a0f1d;
+  font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:calc(var(--k)*18px);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.sb:hover{background:#ffd0e0}
 </style>
 </head>
 <body>
@@ -132,6 +152,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <a class="chip" href="#step3">3 Outward</a>
 <a class="chip" href="#step4">4 Large Noise</a>
 <a class="chip" href="#step5">5 Small Noise</a>
+<a class="chip" href="#full">全文 Full Code</a>
 </div>
 
 <div class="card" id="step1">
@@ -140,6 +161,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="ty">float</span> asymmetry = <span class="fn">chf</span>(<span class="st">"asymmetry"</span>);</div>
 <div class="ln"><span class="ty">float</span> noise_l   = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
@@ -151,6 +173,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"> </div>
 <div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
 </div></div>
+<a class="tofull" href="#full-s1">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Amplitude is how far the outline moves; frequency is how fine the waves are; offset slides the pattern">
 
@@ -197,11 +221,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">左右を非対称にする</div><div class="cs">Make it asymmetric</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Asymmetry</span></div>
 <div class="ln"><span class="ty">float</span> side = <span class="fn">sin</span>(u * 2.0 * M_PI);</div>
 <div class="ln"><span class="at">@P</span>.x *= 1.0 + side * asymmetry;</div>
 </div></div>
+<a class="tofull" href="#full-s2">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Original outline (dashed) and the asymmetric outline: one side widens, the other narrows; root and tip stay put">
 
@@ -244,6 +271,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">外向きの方向を求める</div><div class="cs">Find the outward direction</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Get outward</span></div>
 <div class="ln"><span class="ty">int</span> prev = (<span class="at">@ptnum</span> - 1 + <span class="at">@numpt</span>) % <span class="at">@numpt</span>;</div>
@@ -256,6 +284,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="ty">vector</span> N_prim  = <span class="fn">prim_normal</span>(0, 0, {0.5, 0.5});</div>
 <div class="ln"><span class="ty">vector</span> outward = <span class="fn">normalize</span>(<span class="fn">cross</span>(tangent, N_prim));</div>
 </div></div>
+<a class="tofull" href="#full-s3">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="prev and next give the tangent; the polygon normal N_prim points out of the XZ plane; their cross product is the outward direction">
 
@@ -305,6 +335,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">大きいノイズ</div><div class="cs">Large noise</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Large Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_l = <span class="fn">set</span>(</div>
@@ -316,6 +347,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="ty">float</span> n_l = <span class="fn">noise</span>(pos_l);</div>
 <div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * noise_l;</div>
 </div></div>
+<a class="tofull" href="#full-s4">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="u is turned into a point on a circle inside the noise field, so u = 0 and u = 1 read the same noise value">
 
@@ -362,6 +395,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">小さいノイズ</div><div class="cs">Small noise</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Small Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_s = <span class="fn">set</span>(</div>
@@ -373,6 +407,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="ty">float</span> n_s = <span class="fn">noise</span>(pos_s);</div>
 <div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * noise_s;</div>
 </div></div>
+<a class="tofull" href="#full-s5">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Original outline, after the large noise, and after adding the small noise">
 
@@ -406,6 +442,103 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 </div>
 </div>
 
+
+<div class="card" id="full">
+<div class="ch">
+<div class="cn">{ }</div>
+<div><div class="ct">全文</div><div class="cs">Full code</div></div>
 </div>
+<div class="fullhead">
+<div class="fullnote">左の番号を押すと、そのステップの解説に飛ぶ。<span class="e">Tap a number on the left to jump to that step’s explanation.</span></div>
+<button type="button" class="copy" id="copyFull">コピー / Copy</button>
+</div>
+<div class="cd fullcd"><div class="code">
+<div class="seg" id="full-s1"><a class="sb" href="#step1" aria-label="Step 1 の解説へ / go to step 1">1</a>
+<div class="ln"><span class="ty">float</span> asymmetry = <span class="fn">chf</span>(<span class="st">"asymmetry"</span>);</div>
+<div class="ln"><span class="ty">float</span> noise_l   = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> scale_l   = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> noise_s   = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> scale_s   = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
+<div class="ln"><span class="ty">vector</span> offset_l = <span class="fn">chv</span>(<span class="st">"offset_l"</span>);</div>
+<div class="ln"><span class="ty">vector</span> offset_s = <span class="fn">chv</span>(<span class="st">"offset_s"</span>);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> u = <span class="at">@curveu</span>;</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s2"><a class="sb" href="#step2" aria-label="Step 2 の解説へ / go to step 2">2</a>
+<div class="ln"><span class="cm">// Asymmetry</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sin</span>(u * 2.0 * M_PI);</div>
+<div class="ln"><span class="at">@P</span>.x *= 1.0 + side * asymmetry;</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s3"><a class="sb" href="#step3" aria-label="Step 3 の解説へ / go to step 3">3</a>
+<div class="ln"><span class="cm">// Get outward</span></div>
+<div class="ln"><span class="ty">int</span> prev = (<span class="at">@ptnum</span> - 1 + <span class="at">@numpt</span>) % <span class="at">@numpt</span>;</div>
+<div class="ln"><span class="ty">int</span> next = (<span class="at">@ptnum</span> + 1) % <span class="at">@numpt</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">vector</span> P_prev = <span class="fn">point</span>(0, <span class="st">"P"</span>, prev);</div>
+<div class="ln"><span class="ty">vector</span> P_next = <span class="fn">point</span>(0, <span class="st">"P"</span>, next);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">vector</span> tangent = <span class="fn">normalize</span>(P_next - P_prev);</div>
+<div class="ln"><span class="ty">vector</span> N_prim  = <span class="fn">prim_normal</span>(0, 0, {0.5, 0.5});</div>
+<div class="ln"><span class="ty">vector</span> outward = <span class="fn">normalize</span>(<span class="fn">cross</span>(tangent, N_prim));</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s4"><a class="sb" href="#step4" aria-label="Step 4 の解説へ / go to step 4">4</a>
+<div class="ln"><span class="cm">// Large Noise</span></div>
+<div class="ln"><span class="ty">vector</span> pos_l = <span class="fn">set</span>(</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    0</div>
+<div class="ln">) + offset_l;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> n_l = <span class="fn">noise</span>(pos_l);</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * noise_l;</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s5"><a class="sb" href="#step5" aria-label="Step 5 の解説へ / go to step 5">5</a>
+<div class="ln"><span class="cm">// Small Noise</span></div>
+<div class="ln"><span class="ty">vector</span> pos_s = <span class="fn">set</span>(</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    0</div>
+<div class="ln">) + offset_s;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">float</span> n_s = <span class="fn">noise</span>(pos_s);</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * noise_s;</div>
+</div>
+</div></div>
+<script type="application/json" id="fullSrc">"float asymmetry = chf(\"asymmetry\");\nfloat noise_l   = chf(\"amplitude_l\");\nfloat scale_l   = chf(\"frequency_l\");\nfloat noise_s   = chf(\"amplitude_s\");\nfloat scale_s   = chf(\"frequency_s\");\nvector offset_l = chv(\"offset_l\");\nvector offset_s = chv(\"offset_s\");\n\nfloat u = @curveu;\n\n// Asymmetry\nfloat side = sin(u * 2.0 * M_PI);\n@P.x *= 1.0 + side * asymmetry;\n\n// Get outward\nint prev = (@ptnum - 1 + @numpt) % @numpt;\nint next = (@ptnum + 1) % @numpt;\n\nvector P_prev = point(0, \"P\", prev);\nvector P_next = point(0, \"P\", next);\n\nvector tangent = normalize(P_next - P_prev);\nvector N_prim  = prim_normal(0, 0, {0.5, 0.5});\nvector outward = normalize(cross(tangent, N_prim));\n\n// Large Noise\nvector pos_l = set(\n    cos(u * 2.0 * M_PI) * scale_l,\n    sin(u * 2.0 * M_PI) * scale_l,\n    0\n) + offset_l;\n\nfloat n_l = noise(pos_l);\n@P += outward * (n_l - 0.5) * noise_l;\n\n// Small Noise\nvector pos_s = set(\n    cos(u * 2.0 * M_PI) * scale_s,\n    sin(u * 2.0 * M_PI) * scale_s,\n    0\n) + offset_s;\n\nfloat n_s = noise(pos_s);\n@P += outward * (n_s - 0.5) * noise_s;\n"</script>
+</div>
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyFull');
+  var src = document.getElementById('fullSrc');
+  if (!btn || !src) return;
+  var label = btn.textContent;
+  function done(ok){
+    btn.textContent = ok ? 'コピーしました / Copied' : 'コピーできませんでした / Copy failed';
+    setTimeout(function(){ btn.textContent = label; }, 2000);
+  }
+  function fallback(text){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta); done(ok);
+    }catch(e){ done(false); }
+  }
+  btn.addEventListener('click', function(){
+    var text = JSON.parse(src.textContent);
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(text); });
+    } else { fallback(text); }
+  });
+})();
+</script>
 </body>
 </html>

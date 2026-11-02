@@ -116,6 +116,26 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 .sja{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:16px;fill:var(--accent)}
 .blob{fill:var(--accent);opacity:.10}
 .blob2{fill:var(--eb-accent);opacity:.10}
+
+/* ---- full code ---- */
+.cdw{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cdw > .cd{flex:1}
+.tofull{align-self:flex-start;font-size:calc(var(--k)*20px);font-weight:700;color:var(--accent-ink);text-decoration:none;padding:4px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.tofull:hover{border-color:var(--accent)}
+.tofull:focus-visible,.sb:focus-visible,.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fullhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:calc(var(--k)*28px)}
+.fullnote{font-size:calc(var(--k)*22px);font-weight:700;line-height:1.6}
+.fullnote .e{display:block;font-size:calc(var(--k)*19px);font-weight:500;color:var(--sub)}
+.copy{font-family:inherit;font-size:calc(var(--k)*21px);font-weight:900;color:#fff;background:var(--accent);border:none;border-radius:999px;padding:10px 24px;cursor:pointer}
+.copy:hover{filter:brightness(1.08)}
+.fullcd{margin-top:calc(var(--k)*20px)}
+.fullcd .code{min-width:max-content}
+.seg,.gap{position:relative;padding-left:calc(var(--k)*64px);border-left:4px solid transparent}
+.seg{border-left-color:#ff8fb8;border-radius:2px;margin:2px 0;scroll-margin-top:24px}
+.seg:hover,.seg:target{background:rgba(255,143,184,.10)}
+.sb{position:absolute;left:calc(var(--k)*12px);top:2px;min-width:calc(var(--k)*34px);height:calc(var(--k)*30px);padding:0 6px;border-radius:999px;background:#ff8fb8;color:#2a0f1d;
+  font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:calc(var(--k)*18px);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.sb:hover{background:#ffd0e0}
 </style>
 </head>
 <body>
@@ -131,6 +151,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <a class="chip" href="#step2">2 Tip & Side</a>
 <a class="chip" href="#step3">3 Cleft</a>
 <a class="chip" href="#step4">4 Shoulders</a>
+<a class="chip" href="#full">全文 Full Code</a>
 </div>
 
 <div class="card" id="step1">
@@ -139,12 +160,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">パラメータを受け取る</div><div class="cs">Read the parameters</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="ty">float</span> notch_depth     = <span class="fn">chf</span>(<span class="st">"notch_depth"</span>);</div>
 <div class="ln"><span class="ty">float</span> notch_direction = <span class="fn">chf</span>(<span class="st">"notch_direction"</span>);</div>
 <div class="ln"><span class="ty">float</span> notch_width     = <span class="fn">chf</span>(<span class="st">"notch_width"</span>);</div>
 <div class="ln"><span class="ty">float</span> notch_range     = <span class="fn">chf</span>(<span class="st">"notch_range"</span>);</div>
 </div></div>
+<a class="tofull" href="#full-s1">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Tip close-up: notch_depth pulls the tip down, notch_direction shifts it sideways, notch_width spreads the shoulders">
 
@@ -191,6 +215,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">先端の点を読んで、左右を決める</div><div class="cs">Read the tip, decide left or right</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Tip point (saved by fix_curveu)</span></div>
 <div class="ln"><span class="kw">if</span> (!<span class="fn">hasdetailattrib</span>(0, <span class="st">"tip_pt"</span>))</div>
@@ -202,6 +227,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln"><span class="cm">// Left or Right? (measured from the tip, before moving)</span></div>
 <div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x - tip_P.x);</div>
 </div></div>
+<a class="tofull" href="#full-s2">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 256" role="img" aria-label="The tip point saved by Fix Curveu is read; left and right are measured from the tip x position">
 <defs><marker id="k2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs><path d="M60.0 240.0 L90.0 150.0 L140.0 118.0 L200.0 102.0 L260.0 98.0 L320.0 102.0 L380.0 118.0 L430.0 150.0 L460.0 240.0" class="cv"/><line x1="260.0" y1="40.0" x2="260.0" y2="226.0" class="gd"/><circle cx="90.0" cy="150.0" r="5" class="dotg"/><circle cx="140.0" cy="118.0" r="5" class="dotg"/><circle cx="200.0" cy="102.0" r="5" class="dotg"/><circle cx="260.0" cy="98.0" r="7" class="dot"/><circle cx="320.0" cy="102.0" r="5" class="dotg"/><circle cx="380.0" cy="118.0" r="5" class="dotg"/><circle cx="430.0" cy="150.0" r="5" class="dotg"/><circle cx="260" cy="98" r="14" fill="none" class="arra"/><text x="278.0" y="84.0" class="sla">tip_P</text><line x1="244.0" y1="176.0" x2="140.0" y2="176.0" class="arrb" marker-end="url(#k2b)"/><line x1="276.0" y1="176.0" x2="380.0" y2="176.0" class="arrb" marker-end="url(#k2b)"/><text x="192.0" y="200.0" text-anchor="middle" class="slb">side = −1</text><text x="328.0" y="200.0" text-anchor="middle" class="slb">side = +1</text><text x="260.0" y="34.0" text-anchor="middle" class="sj">先端の x が基準 measured from the tip</text><text x="260.0" y="246.0" text-anchor="middle" class="sm">detail(0, "tip_pt") ← Fix Curveu</text>
@@ -232,6 +259,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">先端を引っ込めて V 字にする</div><div class="cs">Pull the tip in (V cleft)</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="kw">if</span> (<span class="at">@ptnum</span> == tip_pt)</div>
 <div class="ln">{</div>
@@ -240,6 +268,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln">    <span class="at">@P</span>.x -= notch_direction;</div>
 <div class="ln">}</div>
 </div></div>
+<a class="tofull" href="#full-s3">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 260" role="img" aria-label="Only the tip point moves: down by notch_depth and sideways by notch_direction, making a V-shaped cleft">
 
@@ -279,6 +309,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div><div class="ct">肩を左右に広げる</div><div class="cs">Spread the shoulders</div></div>
 </div>
 <div class="mid">
+<div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="kw">else</span></div>
 <div class="ln">{</div>
@@ -289,6 +320,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="ln">    <span class="at">@P</span>.x += side * notch_width * weight;</div>
 <div class="ln">}</div>
 </div></div>
+<a class="tofull" href="#full-s4">全文で見る ↓ See in full code</a>
+</div>
 <div class="dg">
 <svg viewBox="0 0 520 256" role="img" aria-label="weight against u: 1 next to the tip, easing down to 0 at notch_range away from u = 0.5">
 <defs><marker id="k4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahp"/></marker><marker id="k4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpa"/></marker><marker id="k4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahpb"/></marker></defs><line x1="40.0" y1="196.0" x2="496.0" y2="196.0" class="ax"/><line x1="40.0" y1="196.0" x2="40.0" y2="30.0" class="ax"/><line x1="40.0" y1="52.0" x2="480.0" y2="52.0" class="gd"/><line x1="100.0" y1="196.0" x2="100.0" y2="52.0" class="gd"/><line x1="420.0" y1="196.0" x2="420.0" y2="52.0" class="gd"/><path d="M40.0 196.0 L42.2 196.0 L44.4 196.0 L46.6 196.0 L48.8 196.0 L51.0 196.0 L53.2 196.0 L55.4 196.0 L57.6 196.0 L59.8 196.0 L62.0 196.0 L64.2 196.0 L66.4 196.0 L68.6 196.0 L70.8 196.0 L73.0 196.0 L75.2 196.0 L77.4 196.0 L79.6 196.0 L81.8 196.0 L84.0 196.0 L86.2 196.0 L88.4 196.0 L90.6 196.0 L92.8 196.0 L95.0 196.0 L97.2 196.0 L99.4 196.0 L101.6 196.0 L103.8 195.8 L106.0 195.4 L108.2 194.9 L110.4 194.3 L112.6 193.5 L114.8 192.5 L117.0 191.5 L119.2 190.3 L121.4 189.0 L123.6 187.5 L125.8 186.0 L128.0 184.3 L130.2 182.5 L132.4 180.7 L134.6 178.7 L136.8 176.7 L139.0 174.5 L141.2 172.3 L143.4 170.0 L145.6 167.6 L147.8 165.1 L150.0 162.6 L152.2 160.0 L154.4 157.4 L156.6 154.7 L158.8 152.0 L161.0 149.2 L163.2 146.3 L165.4 143.5 L167.6 140.6 L169.8 137.7 L172.0 134.8 L174.2 131.8 L176.4 128.9 L178.6 125.9 L180.8 122.9 L183.0 120.0 L185.2 117.0 L187.4 114.0 L189.6 111.1 L191.8 108.2 L194.0 105.3 L196.2 102.4 L198.4 99.6 L200.6 96.8 L202.8 94.1 L205.0 91.3 L207.2 88.7 L209.4 86.1 L211.6 83.6 L213.8 81.1 L216.0 78.7 L218.2 76.3 L220.4 74.1 L222.6 71.9 L224.8 69.8 L227.0 67.9 L229.2 66.0 L231.4 64.2 L233.6 62.5 L235.8 60.9 L238.0 59.4 L240.2 58.1 L242.4 56.8 L244.6 55.7 L246.8 54.8 L249.0 53.9 L251.2 53.3 L253.4 52.7 L255.6 52.3 L257.8 52.1 L260.0 52.0 L262.2 52.1 L264.4 52.3 L266.6 52.7 L268.8 53.3 L271.0 53.9 L273.2 54.8 L275.4 55.7 L277.6 56.8 L279.8 58.1 L282.0 59.4 L284.2 60.9 L286.4 62.5 L288.6 64.2 L290.8 66.0 L293.0 67.9 L295.2 69.8 L297.4 71.9 L299.6 74.1 L301.8 76.3 L304.0 78.7 L306.2 81.1 L308.4 83.6 L310.6 86.1 L312.8 88.7 L315.0 91.3 L317.2 94.1 L319.4 96.8 L321.6 99.6 L323.8 102.4 L326.0 105.3 L328.2 108.2 L330.4 111.1 L332.6 114.0 L334.8 117.0 L337.0 120.0 L339.2 122.9 L341.4 125.9 L343.6 128.9 L345.8 131.8 L348.0 134.8 L350.2 137.7 L352.4 140.6 L354.6 143.5 L356.8 146.3 L359.0 149.2 L361.2 152.0 L363.4 154.7 L365.6 157.4 L367.8 160.0 L370.0 162.6 L372.2 165.1 L374.4 167.6 L376.6 170.0 L378.8 172.3 L381.0 174.5 L383.2 176.7 L385.4 178.7 L387.6 180.7 L389.8 182.5 L392.0 184.3 L394.2 186.0 L396.4 187.5 L398.6 189.0 L400.8 190.3 L403.0 191.5 L405.2 192.5 L407.4 193.5 L409.6 194.3 L411.8 194.9 L414.0 195.4 L416.2 195.8 L418.4 196.0 L420.6 196.0 L422.8 196.0 L425.0 196.0 L427.2 196.0 L429.4 196.0 L431.6 196.0 L433.8 196.0 L436.0 196.0 L438.2 196.0 L440.4 196.0 L442.6 196.0 L444.8 196.0 L447.0 196.0 L449.2 196.0 L451.4 196.0 L453.6 196.0 L455.8 196.0 L458.0 196.0 L460.2 196.0 L462.4 196.0 L464.6 196.0 L466.8 196.0 L469.0 196.0 L471.2 196.0 L473.4 196.0 L475.6 196.0 L477.8 196.0 L480.0 196.0" class="cv"/><circle cx="128.0" cy="184.3" r="5" class="dot"/><circle cx="172.0" cy="134.8" r="5" class="dot"/><circle cx="216.0" cy="78.7" r="5" class="dot"/><circle cx="304.0" cy="78.7" r="5" class="dot"/><circle cx="348.0" cy="134.8" r="5" class="dot"/><circle cx="392.0" cy="184.3" r="5" class="dot"/><circle cx="260.0" cy="52.0" r="6" class="dot2"/><text x="260.0" y="40.0" text-anchor="middle" class="sj">tip（else に入らない）</text><line x1="260.0" y1="228.0" x2="420.0" y2="228.0" class="arra" marker-end="url(#k4a)"/><text x="340.0" y="250.0" text-anchor="middle" class="sla">notch_range</text><text x="30.0" y="200.0" text-anchor="end" class="sm">0</text><text x="30.0" y="56.0" text-anchor="end" class="sm">1</text><text x="46.0" y="26.0" class="sl">weight</text><text x="500.0" y="200.0" class="sl">u</text><text x="260.0" y="216.0" text-anchor="middle" class="sm">u = 0.5</text>
@@ -313,6 +346,86 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 </div>
 </div>
 
+
+<div class="card" id="full">
+<div class="ch">
+<div class="cn">{ }</div>
+<div><div class="ct">全文</div><div class="cs">Full code</div></div>
 </div>
+<div class="fullhead">
+<div class="fullnote">左の番号を押すと、そのステップの解説に飛ぶ。<span class="e">Tap a number on the left to jump to that step’s explanation.</span></div>
+<button type="button" class="copy" id="copyFull">コピー / Copy</button>
+</div>
+<div class="cd fullcd"><div class="code">
+<div class="seg" id="full-s1"><a class="sb" href="#step1" aria-label="Step 1 の解説へ / go to step 1">1</a>
+<div class="ln"><span class="ty">float</span> notch_depth     = <span class="fn">chf</span>(<span class="st">"notch_depth"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_direction = <span class="fn">chf</span>(<span class="st">"notch_direction"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_width     = <span class="fn">chf</span>(<span class="st">"notch_width"</span>);</div>
+<div class="ln"><span class="ty">float</span> notch_range     = <span class="fn">chf</span>(<span class="st">"notch_range"</span>);</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s2"><a class="sb" href="#step2" aria-label="Step 2 の解説へ / go to step 2">2</a>
+<div class="ln"><span class="cm">// Tip point (saved by fix_curveu)</span></div>
+<div class="ln"><span class="kw">if</span> (!<span class="fn">hasdetailattrib</span>(0, <span class="st">"tip_pt"</span>))</div>
+<div class="ln">    <span class="kw">return</span>;</div>
+<div class="ln"> </div>
+<div class="ln"><span class="ty">int</span> tip_pt   = <span class="fn">detail</span>(0, <span class="st">"tip_pt"</span>);</div>
+<div class="ln"><span class="ty">vector</span> tip_P = <span class="fn">point</span>(0, <span class="st">"P"</span>, tip_pt);</div>
+<div class="ln"> </div>
+<div class="ln"><span class="cm">// Left or Right? (measured from the tip, before moving)</span></div>
+<div class="ln"><span class="ty">float</span> side = <span class="fn">sign</span>(<span class="at">@P</span>.x - tip_P.x);</div>
+</div>
+<div class="gap"><div class="ln"> </div></div>
+<div class="seg" id="full-s3"><a class="sb" href="#step3" aria-label="Step 3 の解説へ / go to step 3">3</a>
+<div class="ln"><span class="kw">if</span> (<span class="at">@ptnum</span> == tip_pt)</div>
+<div class="ln">{</div>
+<div class="ln">    <span class="cm">// Move only the tip point</span></div>
+<div class="ln">    <span class="at">@P</span>.z -= notch_depth;</div>
+<div class="ln">    <span class="at">@P</span>.x -= notch_direction;</div>
+<div class="ln">}</div>
+</div>
+<div class="seg" id="full-s4"><a class="sb" href="#step4" aria-label="Step 4 の解説へ / go to step 4">4</a>
+<div class="ln"><span class="kw">else</span></div>
+<div class="ln">{</div>
+<div class="ln">    <span class="cm">// Spread shoulders outward (weight by distance in u from the tip)</span></div>
+<div class="ln">    <span class="ty">float</span> d = <span class="fn">abs</span>(<span class="at">@curveu</span> - 0.5);</div>
+<div class="ln">    <span class="ty">float</span> weight = 1.0 - <span class="fn">smooth</span>(0.0, notch_range, d);</div>
+<div class="ln"> </div>
+<div class="ln">    <span class="at">@P</span>.x += side * notch_width * weight;</div>
+<div class="ln">}</div>
+</div>
+</div></div>
+<script type="application/json" id="fullSrc">"float notch_depth     = chf(\"notch_depth\");\nfloat notch_direction = chf(\"notch_direction\");\nfloat notch_width     = chf(\"notch_width\");\nfloat notch_range     = chf(\"notch_range\");\n\n// Tip point (saved by fix_curveu)\nif (!hasdetailattrib(0, \"tip_pt\"))\n    return;\n\nint tip_pt   = detail(0, \"tip_pt\");\nvector tip_P = point(0, \"P\", tip_pt);\n\n// Left or Right? (measured from the tip, before moving)\nfloat side = sign(@P.x - tip_P.x);\n\nif (@ptnum == tip_pt)\n{\n    // Move only the tip point\n    @P.z -= notch_depth;\n    @P.x -= notch_direction;\n}\nelse\n{\n    // Spread shoulders outward (weight by distance in u from the tip)\n    float d = abs(@curveu - 0.5);\n    float weight = 1.0 - smooth(0.0, notch_range, d);\n\n    @P.x += side * notch_width * weight;\n}\n"</script>
+</div>
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyFull');
+  var src = document.getElementById('fullSrc');
+  if (!btn || !src) return;
+  var label = btn.textContent;
+  function done(ok){
+    btn.textContent = ok ? 'コピーしました / Copied' : 'コピーできませんでした / Copy failed';
+    setTimeout(function(){ btn.textContent = label; }, 2000);
+  }
+  function fallback(text){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta); done(ok);
+    }catch(e){ done(false); }
+  }
+  btn.addEventListener('click', function(){
+    var text = JSON.parse(src.textContent);
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(text); });
+    } else { fallback(text); }
+  });
+})();
+</script>
 </body>
 </html>
