@@ -102,6 +102,26 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 @media (max-width:1299px){.mid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:899px){.two{grid-template-columns:minmax(0,1fr)}}
 
+/* ---- full code ---- */
+.cdw{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cdw > .cd{flex:1}
+.tofull{align-self:flex-start;font-size:calc(var(--k)*20px);font-weight:700;color:var(--accent-ink);text-decoration:none;padding:4px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.tofull:hover{border-color:var(--accent)}
+.tofull:focus-visible,.sb:focus-visible,.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.fullhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:calc(var(--k)*28px)}
+.fullnote{font-size:calc(var(--k)*22px);font-weight:700;line-height:1.6}
+.fullnote .e{display:block;font-size:calc(var(--k)*19px);font-weight:500;color:var(--sub)}
+.copy{font-family:inherit;font-size:calc(var(--k)*21px);font-weight:900;color:#fff;background:var(--accent);border:none;border-radius:999px;padding:10px 24px;cursor:pointer}
+.copy:hover{filter:brightness(1.08)}
+.fullcd{margin-top:calc(var(--k)*20px)}
+.fullcd .code{min-width:max-content}
+.seg,.gap{position:relative;padding-left:calc(var(--k)*64px);border-left:4px solid transparent}
+.seg{border-left-color:#ff8fb8;border-radius:2px;margin:2px 0;scroll-margin-top:24px}
+.seg:hover,.seg:target{background:rgba(255,143,184,.10)}
+.sb{position:absolute;left:calc(var(--k)*12px);top:2px;min-width:calc(var(--k)*34px);height:calc(var(--k)*30px);padding:0 6px;border-radius:999px;background:#ff8fb8;color:#2a0f1d;
+  font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:calc(var(--k)*18px);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.sb:hover{background:#ffd0e0}
+
 .dot2{fill:var(--card);stroke:var(--accent);stroke-width:3}
 .dotg{fill:var(--ink3)}
 .box{fill:var(--card);stroke:var(--ink2);stroke-width:2}
@@ -164,10 +184,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="cdw">
 <div class="cd"><div class="code">
 <div class="ln"><span class="ty">float</span> asymmetry = <span class="fn">chf</span>(<span class="st">"asymmetry"</span>);</div>
-<div class="ln"><span class="ty">float</span> noise_l   = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
-<div class="ln"><span class="ty">float</span> scale_l   = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
-<div class="ln"><span class="ty">float</span> noise_s   = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
-<div class="ln"><span class="ty">float</span> scale_s   = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> amp_l     = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> freq_l    = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> amp_s     = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> freq_s    = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
 <div class="ln"><span class="ty">vector</span> offset_l = <span class="fn">chv</span>(<span class="st">"offset_l"</span>);</div>
 <div class="ln"><span class="ty">vector</span> offset_s = <span class="fn">chv</span>(<span class="st">"offset_s"</span>);</div>
 <div class="ln"> </div>
@@ -339,13 +359,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Large Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_l = <span class="fn">set</span>(</div>
-<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_l,</div>
-<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * freq_l,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * freq_l,</div>
 <div class="ln">    0</div>
 <div class="ln">) + offset_l;</div>
 <div class="ln"> </div>
 <div class="ln"><span class="ty">float</span> n_l = <span class="fn">noise</span>(pos_l);</div>
-<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * noise_l;</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * amp_l;</div>
 </div></div>
 <a class="tofull" href="#full-s4">全文で見る ↓ See in full code</a>
 </div>
@@ -399,13 +419,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="cd"><div class="code">
 <div class="ln"><span class="cm">// Small Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_s = <span class="fn">set</span>(</div>
-<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_s,</div>
-<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * freq_s,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * freq_s,</div>
 <div class="ln">    0</div>
 <div class="ln">) + offset_s;</div>
 <div class="ln"> </div>
 <div class="ln"><span class="ty">float</span> n_s = <span class="fn">noise</span>(pos_s);</div>
-<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * noise_s;</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * amp_s;</div>
 </div></div>
 <a class="tofull" href="#full-s5">全文で見る ↓ See in full code</a>
 </div>
@@ -455,10 +475,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="cd fullcd"><div class="code">
 <div class="seg" id="full-s1"><a class="sb" href="#step1" aria-label="Step 1 の解説へ / go to step 1">1</a>
 <div class="ln"><span class="ty">float</span> asymmetry = <span class="fn">chf</span>(<span class="st">"asymmetry"</span>);</div>
-<div class="ln"><span class="ty">float</span> noise_l   = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
-<div class="ln"><span class="ty">float</span> scale_l   = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
-<div class="ln"><span class="ty">float</span> noise_s   = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
-<div class="ln"><span class="ty">float</span> scale_s   = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> amp_l     = <span class="fn">chf</span>(<span class="st">"amplitude_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> freq_l    = <span class="fn">chf</span>(<span class="st">"frequency_l"</span>);</div>
+<div class="ln"><span class="ty">float</span> amp_s     = <span class="fn">chf</span>(<span class="st">"amplitude_s"</span>);</div>
+<div class="ln"><span class="ty">float</span> freq_s    = <span class="fn">chf</span>(<span class="st">"frequency_s"</span>);</div>
 <div class="ln"><span class="ty">vector</span> offset_l = <span class="fn">chv</span>(<span class="st">"offset_l"</span>);</div>
 <div class="ln"><span class="ty">vector</span> offset_s = <span class="fn">chv</span>(<span class="st">"offset_s"</span>);</div>
 <div class="ln"> </div>
@@ -487,28 +507,28 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','
 <div class="seg" id="full-s4"><a class="sb" href="#step4" aria-label="Step 4 の解説へ / go to step 4">4</a>
 <div class="ln"><span class="cm">// Large Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_l = <span class="fn">set</span>(</div>
-<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_l,</div>
-<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_l,</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * freq_l,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * freq_l,</div>
 <div class="ln">    0</div>
 <div class="ln">) + offset_l;</div>
 <div class="ln"> </div>
 <div class="ln"><span class="ty">float</span> n_l = <span class="fn">noise</span>(pos_l);</div>
-<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * noise_l;</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_l - 0.5) * amp_l;</div>
 </div>
 <div class="gap"><div class="ln"> </div></div>
 <div class="seg" id="full-s5"><a class="sb" href="#step5" aria-label="Step 5 の解説へ / go to step 5">5</a>
 <div class="ln"><span class="cm">// Small Noise</span></div>
 <div class="ln"><span class="ty">vector</span> pos_s = <span class="fn">set</span>(</div>
-<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * scale_s,</div>
-<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * scale_s,</div>
+<div class="ln">    <span class="fn">cos</span>(u * 2.0 * M_PI) * freq_s,</div>
+<div class="ln">    <span class="fn">sin</span>(u * 2.0 * M_PI) * freq_s,</div>
 <div class="ln">    0</div>
 <div class="ln">) + offset_s;</div>
 <div class="ln"> </div>
 <div class="ln"><span class="ty">float</span> n_s = <span class="fn">noise</span>(pos_s);</div>
-<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * noise_s;</div>
+<div class="ln"><span class="at">@P</span> += outward * (n_s - 0.5) * amp_s;</div>
 </div>
 </div></div>
-<script type="application/json" id="fullSrc">"float asymmetry = chf(\"asymmetry\");\nfloat noise_l   = chf(\"amplitude_l\");\nfloat scale_l   = chf(\"frequency_l\");\nfloat noise_s   = chf(\"amplitude_s\");\nfloat scale_s   = chf(\"frequency_s\");\nvector offset_l = chv(\"offset_l\");\nvector offset_s = chv(\"offset_s\");\n\nfloat u = @curveu;\n\n// Asymmetry\nfloat side = sin(u * 2.0 * M_PI);\n@P.x *= 1.0 + side * asymmetry;\n\n// Get outward\nint prev = (@ptnum - 1 + @numpt) % @numpt;\nint next = (@ptnum + 1) % @numpt;\n\nvector P_prev = point(0, \"P\", prev);\nvector P_next = point(0, \"P\", next);\n\nvector tangent = normalize(P_next - P_prev);\nvector N_prim  = prim_normal(0, 0, {0.5, 0.5});\nvector outward = normalize(cross(tangent, N_prim));\n\n// Large Noise\nvector pos_l = set(\n    cos(u * 2.0 * M_PI) * scale_l,\n    sin(u * 2.0 * M_PI) * scale_l,\n    0\n) + offset_l;\n\nfloat n_l = noise(pos_l);\n@P += outward * (n_l - 0.5) * noise_l;\n\n// Small Noise\nvector pos_s = set(\n    cos(u * 2.0 * M_PI) * scale_s,\n    sin(u * 2.0 * M_PI) * scale_s,\n    0\n) + offset_s;\n\nfloat n_s = noise(pos_s);\n@P += outward * (n_s - 0.5) * noise_s;\n"</script>
+<script type="application/json" id="fullSrc">"float asymmetry = chf(\"asymmetry\");\nfloat amp_l     = chf(\"amplitude_l\");\nfloat freq_l    = chf(\"frequency_l\");\nfloat amp_s     = chf(\"amplitude_s\");\nfloat freq_s    = chf(\"frequency_s\");\nvector offset_l = chv(\"offset_l\");\nvector offset_s = chv(\"offset_s\");\n\nfloat u = @curveu;\n\n// Asymmetry\nfloat side = sin(u * 2.0 * M_PI);\n@P.x *= 1.0 + side * asymmetry;\n\n// Get outward\nint prev = (@ptnum - 1 + @numpt) % @numpt;\nint next = (@ptnum + 1) % @numpt;\n\nvector P_prev = point(0, \"P\", prev);\nvector P_next = point(0, \"P\", next);\n\nvector tangent = normalize(P_next - P_prev);\nvector N_prim  = prim_normal(0, 0, {0.5, 0.5});\nvector outward = normalize(cross(tangent, N_prim));\n\n// Large Noise\nvector pos_l = set(\n    cos(u * 2.0 * M_PI) * freq_l,\n    sin(u * 2.0 * M_PI) * freq_l,\n    0\n) + offset_l;\n\nfloat n_l = noise(pos_l);\n@P += outward * (n_l - 0.5) * amp_l;\n\n// Small Noise\nvector pos_s = set(\n    cos(u * 2.0 * M_PI) * freq_s,\n    sin(u * 2.0 * M_PI) * freq_s,\n    0\n) + offset_s;\n\nfloat n_s = noise(pos_s);\n@P += outward * (n_s - 0.5) * amp_s;\n"</script>
 </div>
 </div>
 
